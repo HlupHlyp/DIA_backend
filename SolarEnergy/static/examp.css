@@ -1,0 +1,96 @@
+@font-face {
+  font-family: 'Graphik';
+  src: local('Graphik Bold'), local('Graphik-Bold'),
+      url('fonts/Graphik-Bold.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+body{
+  background: #EFEFEF;
+}
+.space{
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container{
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+
+.card{
+  background-color: #FFFAFA;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: content-box;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+}
+
+.image{
+  width: 100%;
+  object-fit: cover;
+}
+
+.title{
+  color: #46735b;
+  font-size: 17px;
+  font-family: 'Arial';
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.short-description{
+  font-size: 13px;
+  font-weight: 400;
+  width: 100%;
+  color:#0d776e;
+  font-family: 'Arial';
+  margin-top: 8px;
+  line-height: 1.55;
+}
+
+.info{
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.card-button{
+  padding-left:5px;
+  padding-right:5px;
+  align-items:center;
+  height:40px;
+  color:#ffffff;
+  background-color:#1c808a;
+  border: 2px solid #1c808a;
+  text-align:center;
+  vertical-align:middle;
+  line-height:40px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Arial';
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+}
+
+.down{
+  align-items: center;
+  padding-left:30px;
+  padding-right:30px;
+  padding-bottom:21px;
+}
+.down p{
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cost{
+  font-size:30px;
+  color: #46735b;
+  font-weight:600;
+  line-height:1.35;
+  margin-top:12px;
+  font-family: 'Arial';
+}
