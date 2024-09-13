@@ -7,18 +7,20 @@
 }
 
 body{
-  background: #EFEFEF;
+  background: #ffffff;
+  margin: 0;
 }
 .space{
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
 }
 
 .container{
   display: grid;
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(4,1fr);
   gap: 20px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .card{
@@ -32,7 +34,10 @@ body{
 
 .image{
   width: 100%;
-  object-fit: cover;
+  height: 100%;
+  object-fit: contain;
+  margin: auto;
+  box-sizing: content-box;
 }
 
 .title{
@@ -94,3 +99,22 @@ body{
   margin-top:12px;
   font-family: 'Arial';
 }
+
+.header{
+  background-color:#ffffff;
+  height:80px;
+  width:100%;
+  margin-bottom: 20px;
+  align-content: center;
+  vertical-align: middle;
+  text-align: right;
+}
+
+.card_sign{
+  background-color:#ffffff;
+  width: 70px;
+  margin-left:2%;
+  height:50px;
+  border: 2px solid #46735b;
+}
+

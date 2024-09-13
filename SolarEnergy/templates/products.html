@@ -9,13 +9,17 @@
     <link rel="stylesheet" type="text/css" href="{% static 'examp.css' %}">
   </head>
   <body>
+
     <div class="space">
-        <div class="header"></div>
-          <div class="container">
-              {% for product in data.products %}
-                  {% include 'product_card.html' with element=product %}
-              {% endfor %}
+        <div class="header">
+          <div class = "card_sign"><img class = "image" src="https://optim.tildacdn.com/tild6131-3961-4264-b230-396236303062/-/resize/120x/-/format/webp/icons8--100_1.png">
           </div>
+        </div>
+        <div class="container">
+            {% for product in data.products %}
+                {% include 'product_card.html' with element=product %}
+            {% endfor %}
+        </div>
     </div>
   </body>
 </html>

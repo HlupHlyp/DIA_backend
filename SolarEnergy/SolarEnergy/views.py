@@ -23,37 +23,43 @@ def GetProducts(request):
     return render(request, 'products.html', {'data' : {
         'current_date': date.today(),
         'products': [
-            {'title': 'ПАНЕЛЬ СОЛНЕЧНАЯ 285 ВТ 24 В ПОЛИ', 
+            {'id':'solar_panel_1',
+            'title': 'ПАНЕЛЬ СОЛНЕЧНАЯ 285 ВТ 24 В ПОЛИ', 
             'img': 'https://static.tildacdn.com/stor3233-3066-4138-b131-313435613565/42677272.gif',
-            'model':'General Energo',
-            'power': 210, 
-            'structure':'Поликристаллические', 
-            'category':'Grade A', 
+            'short_description':['General Energo', 'Мощность 210Вт', 'Поликристаллические,Grade A'],
+            'long_description':'',
             'type':'solar_panel', 
             'cost': 10500
             },
-            {'title': 'СЕТЕВОЙ ИНВЕРТОР KSTAR BLUE-G 3000S', 
-            'img': 'https://optim.tildacdn.com/stor3033-3638-4337-b035-616665363734/-/resize/400x/-/format/webp/85787059.png',
-            'power': 3000, 
-            'num_phases':'1-фаза', 
-            'type':'invertor',
-            'cost': 49000
+            {'id':'battery_1',
+            'title': 'ГЕЛЕВЫЙ АККУМУЛЯТОР GENERAL ENERGO 150-12', 
+            'img': 'https://optim.tildacdn.com/stor6132-3266-4261-b064-383038643537/-/format/webp/46392380.png',
+            'short_description':['Свинцово-кислотные аккумуляторы GENRAL ENERGO серии NCPG',
+            'Емкость 150 а.ч.',
+            'Напряжение 12 В.'
+            'Текущую стоимость и наличие - уточняйте.'],
+            'long_description':'',
+            'type':'battery',
+            'cost': 34400
             },
-            {'title': '', 
-            'img': '',
-            'model': '', 
-            'capacity':'', 
-            'voltage':'',
-            'type':'invertor',
-            'cost': 49000
+            {'id':'solar_panel_2',
+            'title': 'СОЛНЕЧНАЯ ПАНЕЛЬ LUXEN 450-144M', 
+            'img': 'https://optim.tildacdn.com/stor3364-6163-4138-b566-363731333861/-/resize/400x/-/format/webp/97770851.jpg',
+            'short_description':['LUXEN 450-144M', 'Мощность 450Вт', 'Монокремний, Grade A+'],
+            'long_description':'',
+            'type':'solar_panel', 
+            'cost': 17400
             },
-            {'title': 'КОНТРОЛЛЕР ЗАРЯДА ШИМ', 
-            'img': '',
-            'bms_type': 'ШИМ', 
-            'current':'', 
-            'voltage':'',
-            'type':'invertor',
-            'cost': 49000
+            {'id':'battery_2',
+            'title': 'КАРБОНОВЫЙ АККУМУЛЯТОР 100-12', 
+            'img': 'https://optim.tildacdn.com/stor3632-6339-4235-a230-383533643566/-/resize/500x/-/format/webp/62062225.jpg',
+            'short_description':['Карбоновый AGM аккумулятор GENERAL ENERGO CB100-12',
+            'Емкость 100 а.ч.',
+            'Напряжение 12 В.',
+            'Текущую стоимость и наличие - уточняйте'],
+            'long_description':'',
+            'type':'battery',
+            'cost': 27700
             },
         ]
     }})
