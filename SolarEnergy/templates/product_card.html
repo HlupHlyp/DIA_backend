@@ -1,0 +1,36 @@
+
+    <div class="card">
+            <img src="{{ element.img }}" class="image">
+            <div class="info">
+                <div class="title">{{ element.title }}</div>
+                <div class="short-description"> 
+                    {% if element.type == 'solar_panel' %}
+                        {{ element.model }} <br>
+                        Мощность {{ element.power }} Вт<br>
+                        {{ element.structure }}, {{ element.category }} <br>
+                    {% elif element.type == 'invertor' %}
+                        Мощность {{ element.power }} Вт {{ element.num_phases }}<br>
+                        Наличие и текущую стоимость - уточняйте <br>
+                    {% elif element.type == 'bms' %}
+                        Тип {{ element.type }} <br>
+                        {{ element.power }} Вт<br>
+                        {{ element.structure }}, {{ element.category }} <br>
+                    {% elif element.type == 'battery' %}
+                        {{ element.type }} <br>
+                        {{ element.model }} <br>
+                        Ёмкость {{ element.capacity }} а.ч. Напряжение {{element.voltage}} В<br>
+                        Текущую стоимость и наличие - уточняйте.
+                    {% elif element.type == 'bms' %}    
+                        Тип {{ element.bms_type }} <br>
+                        Ток заряда {{ element.current }} А<br>
+                        Напряжение системы {{ element.voltage }} В <br>
+                    {% else %}
+                        Данные отсутствуют
+                    {% endif %}
+                </div>
+                <div class = "cost">{{ element.cost }} р.</div>
+                </div>
+        <div class="down">
+            <div href="" class="card-button">ПОДРОБНЕЕ</div>
+        </div>
+    </div>
