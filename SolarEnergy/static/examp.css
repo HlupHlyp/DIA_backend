@@ -30,6 +30,7 @@ body{
   justify-content: space-between;
   box-sizing: content-box;
   box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+  margin-bottom: 20px;
 }
 
 .image{
@@ -63,21 +64,22 @@ body{
   padding-right: 30px;
 }
 
-.card-button{
+.descript-button{
+  display:flex;
   padding-left:5px;
   padding-right:5px;
-  align-items:center;
   height:40px;
   color:#ffffff;
   background-color:#1c808a;
   border: 2px solid #1c808a;
   text-align:center;
-  vertical-align:middle;
   line-height:40px;
   font-size: 13px;
   font-weight: 500;
   font-family: 'Arial';
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+  text-decoration: none;
+  justify-content: center;
 }
 
 .down{
@@ -104,17 +106,48 @@ body{
   background-color:#ffffff;
   height:80px;
   width:100%;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   align-content: center;
-  vertical-align: middle;
-  text-align: right;
 }
 
-.card_sign{
+.card_button{
   background-color:#ffffff;
   width: 70px;
-  margin-left:2%;
+  margin-left:auto;
+  margin-right: 5%;
   height:50px;
   border: 2px solid #46735b;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+}
+
+.search{
+  width: 80%;
+  background-color:#0d776e;
+  height: 45px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 15px;
+  display:flex;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+}
+
+.search_input{
+  width:87%;
+  font-size:18px;
+  padding-left:10px;
+  padding-right:10px;
+}
+
+.search_button{
+  width:13%;
+  text-decoration: none;
+  display:flex;
+  text-align:center;
+  color:#ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Arial';
+  line-height:45px;
+  justify-content: center;
 }
 

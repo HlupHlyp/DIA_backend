@@ -12,8 +12,15 @@
 
     <div class="space">
         <div class="header">
-          <div class = "card_sign"><img class = "image" src="https://optim.tildacdn.com/tild6131-3961-4264-b230-396236303062/-/resize/120x/-/format/webp/icons8--100_1.png">
+          <div class = "card_button">
+            <a href="">
+            <img class = "image" src="https://optim.tildacdn.com/tild6131-3961-4264-b230-396236303062/-/resize/120x/-/format/webp/icons8--100_1.png">
+            </a>
           </div>
+        </div>
+        <div class = "search">
+          <input type="text" class="search_input"/>
+          <a href="" class="search_button">ПОИСК</a>
         </div>
         <div class="container">
             {% for product in data.products %}
