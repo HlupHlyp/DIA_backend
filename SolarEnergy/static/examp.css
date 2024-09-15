@@ -88,10 +88,6 @@ body{
   padding-right:30px;
   padding-bottom:21px;
 }
-.down p{
-  font-size: 16px;
-  font-weight: 700;
-}
 
 .cost{
   font-size:30px;
@@ -149,5 +145,81 @@ body{
   font-family: 'Arial';
   line-height:45px;
   justify-content: center;
+}
+
+.prod_page_container{
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 1200px;
+  box-sizing: content-box;
+  display:flex;
+}
+
+.prod_page_half{
+  margin-left:20px;
+  margin-right:20px;
+  width:100%;
+  display:inline;
+  max-width:560px;
+}
+
+.prod_page_title{
+  margin-bottom: 18px;
+  box-sizing: content-box;
+  text-align: left;
+  font-family: 'Arial';
+  font-size: 24px;
+  color: #46735b;
+  font-weight: 600;
+}
+
+.prod_page_cost{
+  box-sizing: content-box;
+  text-align: left;
+  font-family: 'Arial';
+  font-size: 20px;
+  line-height:1.35;
+  color: #46735b;
+  font-weight: 600;
+}
+
+.prod_page_description{
+  margin-top:20px;
+  font-family:'Arial';
+  font-weight:400;
+  color:#1c808a;
+  font-size:14px;
+  line-height:1.55;
+  box-sizing:content-box;
+  text-align:left;
+}
+
+.prod_short_description{
+  margin-top:20px;
+  font-family:'Arial';
+  font-weight:400;
+  color:#1c808a;
+  font-size:14px;
+  line-height:1.55;
+  box-sizing:content-box;
+  text-align:left;
+}
+
+.back_button{
+  text-decoration:none;
+  vertical-align: center;
+  position: absolute;
+  left:20px;
+  top:20px;
+  color:#46735b;
+  margin-bottom:20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size:14px;
+  line-height:1.55;
+  font-weight:400;
+  background-color: #ffffff;
+  border: none;
+  cursor:pointer;
 }
 

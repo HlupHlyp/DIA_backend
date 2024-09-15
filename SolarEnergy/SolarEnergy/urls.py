@@ -22,5 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('hello/', views.hello),
     path('', views.GetProducts),
-    path('order/<int:id>/', views.GetOrder, name='order_url'),
+    path('product/<str:id>/', views.GetProduct, name='product_url'),
 ]

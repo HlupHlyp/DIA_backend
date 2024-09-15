@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="rus">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Магазин</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'examp.css' %}">
+  </head>
+  <body>
+
+    <div class="space">
+        <div class="header" style="margin-bottom: 30px;">
+          <input type=button value="&#8592 Вернуться в каталог" onClick="javascript:history.go(-1);" class="back_button">
+          <div class = "card_button">
+            <a href="">
+            <img class = "image" src="https://optim.tildacdn.com/tild6131-3961-4264-b230-396236303062/-/resize/120x/-/format/webp/icons8--100_1.png">
+            </a>
+          </div>
+        </div>
+        
+        <div class = "prod_page_container">
+          <img src="{{product.img}}" class = "prod_page_half">
+          <div class="prod_page_half">
+            <div class="prod_page_title">{{product.title}}</div>
+            <div class="prod_page_cost">{{product.cost}} р.</div>
+            <div class="prod_page_description">
+              <b>Описание </b><br>
+              {{product.long_description}}
+              <div class="prod_page_description">
+                {% for str in product.specification %}
+                  {{str}} <br>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </body>
+</html>
