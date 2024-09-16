@@ -1,16 +1,16 @@
 
-    <div class="card">
-            <img src="{{ element.img }}" class="image">
-            <div class="info">
-                <div class="title">{{ element.title }}</div>
-                <div class="short-description"> 
-                    {% for str in element.short_description %}
-                    {{str}} <br>
-                    {% endfor %}
-                </div>
-                <div class = "cost">{{ element.cost }} р.</div>
-                </div>
-        <div class="down">
-            <a href="{% url 'product_url' element.id %}" class="descript-button">ПОДРОБНЕЕ</a>
+<div class="card">
+    <img src="{{ element.img }}" class="image">
+    <div class="info">
+        <div class="title">{{ element.title }}</div>
+        <div class="short-description"> 
+            {% for str in element.short_description %}
+            {{str}} <br>
+            {% endfor %}
         </div>
+        <div class = "cost">{{ element.cost }} р.</div>
     </div>
+    <div class="down">
+        <a href="{% url 'product_url' element.id %}" class="descript-button">ПОДРОБНЕЕ</a>
+    </div>
+</div>

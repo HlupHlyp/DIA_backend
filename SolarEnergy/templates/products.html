@@ -20,11 +20,11 @@
         </div>
         <form action="searchProduct" method="post" enctype="multipart/form-data" class="search">
           {% csrf_token %}
-          <input name="text" type="text" class="search_input"><br><br>
+          <input name="text" type="text" class="search_input" value="{{data.searchText}}"><br><br>
           <input type="submit" value="ПОИСК" class="search_button">
         </form>
         <div class="container">
-            {% for product in products %}
+            {% for product in data.products %}
                 {% include 'product_card.html' with element=product %}
             {% endfor %}
         </div>

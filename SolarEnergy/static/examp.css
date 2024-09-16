@@ -24,7 +24,7 @@ body{
 }
 
 .card{
-  background-color: #FFFAFA;
+  background-color: #FFFFFF;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -62,6 +62,8 @@ body{
 .info{
   padding-left: 30px;
   padding-right: 30px;
+  padding-top: 36px;
+  padding-bottom: 36px;
 }
 
 .descript-button{
@@ -225,3 +227,31 @@ body{
   cursor:pointer;
 }
 
+.card_container{
+  display:grid;
+  grid-template-rows: repeat(4,20vh);
+  gap: 20px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card_item{
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: content-box;
+  box-shadow: 0px 0px 5px #00000080;
+  margin-bottom: 20px;
+  height:100%;
+}
+
+.card_item_image{
+  max-width:40%;
+}
+
+.card_item_description{
+  margin-left:10px;
+  margin-right:auto;
+  text-align: left;
+}

@@ -12,16 +12,15 @@
 
     <div class="space">
         <div class="header">
-          <div class = "card_button">
-            <a href="">
-            <img class = "image" src="https://optim.tildacdn.com/tild6131-3961-4264-b230-396236303062/-/resize/120x/-/format/webp/icons8--100_1.png">
-            </a>
-          </div>
+            <input type=button value="&#8592 Вернуться в каталог" onClick="javascript:history.go(-1);" class="back_button">
+            <div class = "card_button">
+                <img class = "image" src="https://optim.tildacdn.com/tild6131-3961-4264-b230-396236303062/-/resize/120x/-/format/webp/icons8--100_1.png">
+            </div>
         </div>
-        <div class="container">
-            <!--{% for product in products %}
-                {% include 'product_card.html' with element=product %}
-            {% endfor %}-->
+        <div class="card_container">
+            {% for product in products %}
+                {% include 'card_item.html' with element=product %}
+            {% endfor %}
         </div>
     </div>
   </body>

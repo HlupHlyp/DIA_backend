@@ -1,0 +1,12 @@
+<div class="card_item">
+    <img src="{{ element.img }}" class="card_item_image">
+    <div class="card_item_description">
+        <div class="title">{{ element.title }}</div>
+        <div class="short-description"> 
+            {% for str in element.short_description %}
+            {{str}} <br>
+            {% endfor %}
+        </div>
+        <div class = "cost">{{ element.cost }} р.</div>
+    </div>
+</div>

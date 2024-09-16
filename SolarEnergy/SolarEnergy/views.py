@@ -85,7 +85,8 @@ def GetCard(request):
     return render(request, 'card_page.html', products)
 
 def GetProducts(request):
-    return render(request, 'products.html', products)
+    data = {'data':{'products':products['products'],'searchText':''}}
+    return render(request, 'products.html', data)
 
 def searchProduct(request):
     input_text = request.POST['text']
@@ -160,8 +161,9 @@ def searchProduct(request):
     ]}
     prod_list = products['products']
     sorted_list = []
+    data = {}
     if not input_text:
-        return render(request, 'products.html', products)
+        data = {'data':{'products':products['products'],'searchText':input_text}}
     else:
         for product in prod_list:
             f = False
@@ -177,7 +179,7 @@ def searchProduct(request):
                         f = True
                         break
             if f: sorted_list.append(product)
-        products = {'products':sorted_list}
-        return render(request, 'products.html', products)
+        data = {'data':{'products':sorted_list,'searchText':input_text}}
+    return render(request, 'products.html', data)
 
     
