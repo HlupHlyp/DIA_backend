@@ -13,20 +13,15 @@
     <div class="space">
         <div class="header">
           <div class = "card_button">
-            <a href="/card">
+            <a href="">
             <img class = "image" src="https://optim.tildacdn.com/tild6131-3961-4264-b230-396236303062/-/resize/120x/-/format/webp/icons8--100_1.png">
             </a>
           </div>
         </div>
-        <form action="searchProduct" method="post" enctype="multipart/form-data" class="search">
-          {% csrf_token %}
-          <input name="text" type="text" class="search_input"><br><br>
-          <input type="submit" value="ПОИСК" class="search_button">
-        </form>
         <div class="container">
-            {% for product in products %}
+            <!--{% for product in products %}
                 {% include 'product_card.html' with element=product %}
-            {% endfor %}
+            {% endfor %}-->
         </div>
     </div>
   </body>

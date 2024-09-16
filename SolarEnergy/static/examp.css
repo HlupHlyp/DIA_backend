@@ -140,11 +140,13 @@ body{
   display:flex;
   text-align:center;
   color:#ffffff;
+  background-color:#0d776e;
   font-size: 13px;
   font-weight: 500;
   font-family: 'Arial';
-  line-height:45px;
+  line-height:42px;
   justify-content: center;
+  cursor:pointer;
 }
 
 .prod_page_container{
