@@ -104,7 +104,11 @@ products = {'products':[
         }
     ]}
 
-card = {'card':[{'id':'battery_2'}]}
+cards = {'cards':[
+    {'card_id':0,'sets':[{'id':'battery_2', 'amount':'2'}, {'id':'battery_2','amount':'3'}]},
+    {'card_id':1,'sets':[{'id':'battery_1', 'amount':'4'}, {'id':'solar_panel_1','amount':'3'},
+     {'id':'solar_panel_2','amount':'2'}]}
+    ]}
 
 def GetProduct(request, id):
     prod_list = products['products']
@@ -113,8 +117,18 @@ def GetProduct(request, id):
         if element['id'] == id: product = {'product': element}
     return render(request, 'product_page.html', product)
 
-def GetCard(request, id=1):
-    return render(request, 'card_page.html', products)
+def GetCard(request, id):
+    card_list = cards['cards']
+    card = {}
+    for element in card_list:
+        if int(element['card_id']) == int(id):
+            card = element
+            break
+    prod_list = products['products']
+    print(card)
+    data = {'data':{'products': prod_list, 'card':card}}
+    print(data)
+    return render(request, 'card_page.html', data)
 
 def GetProducts(request):
     input_text = request.GET.get('text','')

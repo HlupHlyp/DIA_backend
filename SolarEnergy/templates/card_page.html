@@ -15,9 +15,13 @@
             <a href="/" class="back_button">&#8592 Вернуться в каталог</a>
         </div>
         <div class="card_container">
-            {% for product in products %}
+          {% for set in data.card.sets %}
+            {% for product in data.products %}
+              {% if product.id == set.id %}
                 {% include 'card_item.html' with element=product %}
+              {% endif %}
             {% endfor %}
+          {% endfor %}
         </div>
     </div>
   </body>
