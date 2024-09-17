@@ -81,15 +81,11 @@ def GetProduct(request, id):
         if element['id'] == id: product = {'product': element}
     return render(request, 'product_page.html', product)
 
-def GetCard(request):
+def GetCard(request, id=1):
     return render(request, 'card_page.html', products)
 
 def GetProducts(request):
-    data = {'data':{'products':products['products'],'searchText':''}}
-    return render(request, 'products.html', data)
-
-def searchProduct(request):
-    input_text = request.POST['text']
+    input_text = request.GET.get('text','')
     products = {'products':[
         {'id':'solar_panel_1',
         'title': 'ПАНЕЛЬ СОЛНЕЧНАЯ 285 ВТ 24 В ПОЛИ', 

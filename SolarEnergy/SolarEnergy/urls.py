@@ -20,7 +20,6 @@ from SolarEnergy import views
 
 urlpatterns = [
     path('', views.GetProducts),
-    path('card', views.GetCard, name='card_url'),
+    path('card/<str:id>', views.GetCard, name='card_url'),
     path('product/<str:id>/', views.GetProduct, name='product_url'),
-    path('searchProduct', views.searchProduct, name='searchProduct'),
 ]

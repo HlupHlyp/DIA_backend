@@ -102,38 +102,49 @@ body{
 
 .header{
   background-color:#ffffff;
+  height:7vh;
+  width:100%;
+  margin-bottom: 0px;
+  align-content: center;
+  display:flex;
+}
+
+.top_line{
+  background-color:#ffffff;
   height:80px;
   width:100%;
   margin-bottom: 0px;
   align-content: center;
+  display:flex;
 }
 
 .card_button{
   background-color:#ffffff;
   width: 70px;
-  margin-left:auto;
-  margin-right: 5%;
-  height:50px;
+  margin-left:none;
+  margin-right: auto;
+  height:45px;
   border: 2px solid #46735b;
   box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
 }
 
 .search{
   width: 80%;
-  background-color:#0d776e;
   height: 45px;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 2%;
   margin-bottom: 15px;
   display:flex;
   box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+  border: 2px solid #46735b;
 }
 
 .search_input{
-  width:87%;
+  width:100%;
   font-size:18px;
   padding-left:10px;
   padding-right:10px;
+  border:none;
 }
 
 .search_button{
