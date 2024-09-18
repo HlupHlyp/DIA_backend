@@ -5,15 +5,7 @@ from datetime import date
 products = {'products':[
         {'id':'solar_panel_1',
         'title': 'ПАНЕЛЬ СОЛНЕЧНАЯ 285 ВТ 24 В ПОЛИ', 
-        'img': 'http://127.0.0.1:9001/api/v1/download-shared-object/aHR0cDovLzEyNy4wLjAuMTo5MDAwL3NvbGFyLW'
-        'VuZXJneS9zb2xhcl9wYW5lbF8xLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUVMMDZ'
-        'IUzlYMlpKTkRVTFZBSVUxJTJGMjAyNDA5MTclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwOTE3V'
-        'DIwMTY0MVomWC1BbXotRXhwaXJlcz00MzE5OSZYLUFtei1TZWN1cml0eS1Ub2tlbj1leUpoYkdjaU9pSklVelV4TWlJc0luUjVjQ0k2SWt'
-        'wWFZDSjkuZXlKaFkyTmxjM05MWlhraU9pSkZUREEyU0ZNNVdESmFTazVFVlV4V1FVbFZNU0lzSW1WNGNDSTZNVGN5TmpZME5UazFOU3dpY'
-        '0dGeVpXNTBJam9pYldsdWFXOWhaRzFwYmlKOS5BakFyLWlKYm5JYjJFVFBCcWxRMnNqZXhGSnpYMG1zZm11dEw0aVdNVHFlSkxrNDFrVU9'
-        'vQmlfbEVGYmhvWTdib2J3ZHJ0dXhlSlA1RkVYYTZvRlFYQSZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmdmVyc2lvbklkPTNkMmEzOTk1L'
-        'WIzYjQtNDhiZS05NzVhLTZiMDI2NTg1ZDZhYSZYLUFtei1TaWduYXR1cmU9MGE2NzI3NGEwMjUwNTI0ODAxNTg5MDlhMGJhZTk5ZGRhYz'
-        'JkODM1MjNhMDM3ZTlmNmFhNGFkZDkzN2RlZDBiYQ',
+        'img': 'http://127.0.0.1:9001/api/v1/download-shared-object/aHR0cDovLzEyNy4wLjAuMTo5MDAwL3NvbGFyLWVuZXJneS9zb2xhcl9wYW5lbF8xLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUc3NzI0VkhLRFo1TkoxRTUxMkczJTJGMjAyNDA5MTglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwOTE4VDA4NDAwOVomWC1BbXotRXhwaXJlcz00MzIwMCZYLUFtei1TZWN1cml0eS1Ub2tlbj1leUpoYkdjaU9pSklVelV4TWlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKaFkyTmxjM05MWlhraU9pSkhOemN5TkZaSVMwUmFOVTVLTVVVMU1USkhNeUlzSW1WNGNDSTZNVGN5TmpZNU1UZ3hOeXdpY0dGeVpXNTBJam9pYldsdWFXOWhaRzFwYmlKOS4zN0V4Qi1RbEY0WTJ6clJabnhFZzVSRFRpRlJvMHVUVHRGZC1jWnNtLWQ1YUVaMGNmU0FlaW01ZFFSQy12MUxaQmNBdlhENFI5dmVRdlBYWXF5cEhsZyZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmdmVyc2lvbklkPTNkMmEzOTk1LWIzYjQtNDhiZS05NzVhLTZiMDI2NTg1ZDZhYSZYLUFtei1TaWduYXR1cmU9ZjlkYWJmMTljNjc2OGFkYTZkYjUxMjdlYjk2MjMxYTI3M2E5OGQzZWUzNDg4YjJjMzU0ZmY3OTJjZjA2NjVhYQ',
         'short_description':['General Energo', 'Мощность 210Вт', 'Поликристаллические,Grade A'],
         'long_description':'Солнечная панель представляет собой устройство, которое преобразует солнечный свет'
         'в электрическую энергию, используя для этого множество объединённых в общую цепь фотоэлементов.'
@@ -29,15 +21,7 @@ products = {'products':[
         },
         {'id':'battery_1',
         'title': 'ГЕЛЕВЫЙ АККУМУЛЯТОР GENERAL ENERGO 150-12', 
-        'img': 'http://127.0.0.1:9001/api/v1/download-shared-object/aHR0cDovLzEyNy4wLjAuMTo5MDAwL3NvbGFy'
-        'LWVuZXJneS9iYXR0ZXJ5XzEucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9'
-        'RUwwNkhTOVgyWkpORFVMVkFJVTElMkYyMDI0MDkxNyUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURh'
-        'dGU9MjAyNDA5MTdUMjAyNTAyWiZYLUFtei1FeHBpcmVzPTQzMTk5JlgtQW16LVNlY3VyaXR5LVRva2VuPWV5SmhiR2NpT2lKS'
-        'VV6VXhNaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpoWTJObGMzTkxaWGtpT2lKRlREQTJTRk01V0RKYVNrNUVWVXhXUVVsVk1TSXNJ'
-        'bVY0Y0NJNk1UY3lOalkwTlRrMU5Td2ljR0Z5Wlc1MElqb2liV2x1YVc5aFpHMXBiaUo5LkFqQXItaUpibkliMkVUUEJxbFEyc2pl'
-        'eEZKelgwbXNmbXV0TDRpV01UcWVKTGs0MWtVT29CaV9sRUZiaG9ZN2JvYndkcnR1eGVKUDVGRVhhNm9GUVhBJlgtQW16LVNpZ25'
-        'lZEhlYWRlcnM9aG9zdCZ2ZXJzaW9uSWQ9MmM4MDNlOTQtNDJkZC00OWY4LTgzNjUtNWVjY2ZiNmU0YzY1JlgtQW16LVNpZ25hdHV'
-        'yZT01MmQzMDE5NTUyZGQ2ODhlYjc5NDUxNjk5OTNjOTkwNTkzNzU0NmY4ZmZmNmZhMjk5ZmRiZDBkOTE3NGIyOGY0',
+        'img': 'http://127.0.0.1:9001/api/v1/download-shared-object/aHR0cDovLzEyNy4wLjAuMTo5MDAwL3NvbGFyLWVuZXJneS9iYXR0ZXJ5XzEucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9Rzc3MjRWSEtEWjVOSjFFNTEyRzMlMkYyMDI0MDkxOCUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNDA5MThUMDg0MDM3WiZYLUFtei1FeHBpcmVzPTQzMTk5JlgtQW16LVNlY3VyaXR5LVRva2VuPWV5SmhiR2NpT2lKSVV6VXhNaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpoWTJObGMzTkxaWGtpT2lKSE56Y3lORlpJUzBSYU5VNUtNVVUxTVRKSE15SXNJbVY0Y0NJNk1UY3lOalk1TVRneE55d2ljR0Z5Wlc1MElqb2liV2x1YVc5aFpHMXBiaUo5LjM3RXhCLVFsRjRZMnpyUlpueEVnNVJEVGlGUm8wdVRUdEZkLWNac20tZDVhRVowY2ZTQWVpbTVkUVJDLXYxTFpCY0F2WEQ0Ujl2ZVF2UFhZcXlwSGxnJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZ2ZXJzaW9uSWQ9MmM4MDNlOTQtNDJkZC00OWY4LTgzNjUtNWVjY2ZiNmU0YzY1JlgtQW16LVNpZ25hdHVyZT0yNjlmZmUyOTc2NTFmMWU0OWYyM2E2Y2FjOTU0OTQzZWM5NmQwZDQzYzNlZDJmMjM3OWE5NWQwOTc3ZDk0M2Vi',
         'short_description':['Свинцово-кислотные аккумуляторы GENRAL ENERGO серии NCPG',
         'Емкость 150 а.ч.',
         'Напряжение 12 В.'
@@ -53,15 +37,7 @@ products = {'products':[
         },
         {'id':'solar_panel_2',
         'title': 'СОЛНЕЧНАЯ ПАНЕЛЬ LUXEN 450-144M', 
-        'img': 'http://127.0.0.1:9001/api/v1/download-shared-object/aHR0cDovLzEyNy4wLjAuMTo5MDAwL3NvbGFyLWVuZX'
-        'JneS9zb2xhcl9wYW5lbF8yLmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUVMMDZI'
-        'UzlYMlpKTkRVTFZBSVUxJTJGMjAyNDA5MTclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwOT'
-        'E3VDIwMjgxMlomWC1BbXotRXhwaXJlcz00MzIwMCZYLUFtei1TZWN1cml0eS1Ub2tlbj1leUpoYkdjaU9pSklVelV4TWlJc0luUjVjQ'
-        '0k2SWtwWFZDSjkuZXlKaFkyTmxjM05MWlhraU9pSkZUREEyU0ZNNVdESmFTazVFVlV4V1FVbFZNU0lzSW1WNGNDSTZNVGN5TmpZME5U'
-        'azFOU3dpY0dGeVpXNTBJam9pYldsdWFXOWhaRzFwYmlKOS5BakFyLWlKYm5JYjJFVFBCcWxRMnNqZXhGSnpYMG1zZm11dEw0aVdNVHFl'
-        'SkxrNDFrVU9vQmlfbEVGYmhvWTdib2J3ZHJ0dXhlSlA1RkVYYTZvRlFYQSZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmdmVyc2lvbklk'
-        'PWE1MGJhYTBhLWY3ZDctNDExYy04Yzk0LTA0NWU3MTdmNjZmYSZYLUFtei1TaWduYXR1cmU9YmI0MTlkOGE1MjI4ZDcwZTBiOTlmODNi'
-        'ZGU0ZGNkZjg1NjM5OWZkNzExZjIxNjk3ODMwNDU0OGJjZTczNDlmYw',
+        'img': 'http://127.0.0.1:9001/api/v1/download-shared-object/aHR0cDovLzEyNy4wLjAuMTo5MDAwL3NvbGFyLWVuZXJneS9zb2xhcl9wYW5lbF8yLmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUc3NzI0VkhLRFo1TkoxRTUxMkczJTJGMjAyNDA5MTglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwOTE4VDA4NDExOVomWC1BbXotRXhwaXJlcz00MzE5OSZYLUFtei1TZWN1cml0eS1Ub2tlbj1leUpoYkdjaU9pSklVelV4TWlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKaFkyTmxjM05MWlhraU9pSkhOemN5TkZaSVMwUmFOVTVLTVVVMU1USkhNeUlzSW1WNGNDSTZNVGN5TmpZNU1UZ3hOeXdpY0dGeVpXNTBJam9pYldsdWFXOWhaRzFwYmlKOS4zN0V4Qi1RbEY0WTJ6clJabnhFZzVSRFRpRlJvMHVUVHRGZC1jWnNtLWQ1YUVaMGNmU0FlaW01ZFFSQy12MUxaQmNBdlhENFI5dmVRdlBYWXF5cEhsZyZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmdmVyc2lvbklkPWE1MGJhYTBhLWY3ZDctNDExYy04Yzk0LTA0NWU3MTdmNjZmYSZYLUFtei1TaWduYXR1cmU9OTgxMDBlNTliYTM4ZmMxMWMyMzc5MjEzN2MwMDNiMTZiMmU4ZTA3MWQxMTQ4NWFhYjFiMzdlOWQzNTRhODgyNw',
         'short_description':['LUXEN 450-144M', 'Мощность 450Вт', 'Монокремний, Grade A+'],
         'long_description':'Солнечная панель представляет собой устройство, которое преобразует солнечный свет'
         ' в электрическую энергию, используя для этого множество объединённых в общую цепь фотоэлементов.'
@@ -75,15 +51,7 @@ products = {'products':[
         },
         {'id':'battery_2',
         'title': 'КАРБОНОВЫЙ АККУМУЛЯТОР 100-12', 
-        'img': 'http://127.0.0.1:9001/api/v1/download-shared-object/aHR0cDovLzEyNy4wLjAuMTo5MDAwL3NvbGFyLWVuZX'
-        'JneS9iYXR0ZXJ5XzIuanBnP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9RUwwNkhTOVgy'
-        'WkpORFVMVkFJVTElMkYyMDI0MDkxNyUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNDA5MTdUMj'
-        'AyNzIyWiZYLUFtei1FeHBpcmVzPTQzMTk5JlgtQW16LVNlY3VyaXR5LVRva2VuPWV5SmhiR2NpT2lKSVV6VXhNaUlzSW5SNWNDSTZJa'
-        '3BYVkNKOS5leUpoWTJObGMzTkxaWGtpT2lKRlREQTJTRk01V0RKYVNrNUVWVXhXUVVsVk1TSXNJbVY0Y0NJNk1UY3lOalkwTlRrMU5Td'
-        '2ljR0Z5Wlc1MElqb2liV2x1YVc5aFpHMXBiaUo5LkFqQXItaUpibkliMkVUUEJxbFEyc2pleEZKelgwbXNmbXV0TDRpV01UcWVKTGs0M'
-        'WtVT29CaV9sRUZiaG9ZN2JvYndkcnR1eGVKUDVGRVhhNm9GUVhBJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZ2ZXJzaW9uSWQ9NWM4N'
-        'GZiMzUtM2MxNC00ZDYxLWE2NGEtNDQ5ZTcyNTdhNGFiJlgtQW16LVNpZ25hdHVyZT01NWQ3MmE2NjEzZDgxMjJhMWM2NjNkNmQxYWNiY'
-        'mVmYmI3NTQ2NGYxNTRkMTJhZmM3ZTRiZDgwMWM1NDA0MjA0',
+        'img': 'http://127.0.0.1:9001/api/v1/download-shared-object/aHR0cDovLzEyNy4wLjAuMTo5MDAwL3NvbGFyLWVuZXJneS9iYXR0ZXJ5XzIuanBnP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9Rzc3MjRWSEtEWjVOSjFFNTEyRzMlMkYyMDI0MDkxOCUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNDA5MThUMDg0MTM2WiZYLUFtei1FeHBpcmVzPTQzMjAwJlgtQW16LVNlY3VyaXR5LVRva2VuPWV5SmhiR2NpT2lKSVV6VXhNaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpoWTJObGMzTkxaWGtpT2lKSE56Y3lORlpJUzBSYU5VNUtNVVUxTVRKSE15SXNJbVY0Y0NJNk1UY3lOalk1TVRneE55d2ljR0Z5Wlc1MElqb2liV2x1YVc5aFpHMXBiaUo5LjM3RXhCLVFsRjRZMnpyUlpueEVnNVJEVGlGUm8wdVRUdEZkLWNac20tZDVhRVowY2ZTQWVpbTVkUVJDLXYxTFpCY0F2WEQ0Ujl2ZVF2UFhZcXlwSGxnJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZ2ZXJzaW9uSWQ9NWM4NGZiMzUtM2MxNC00ZDYxLWE2NGEtNDQ5ZTcyNTdhNGFiJlgtQW16LVNpZ25hdHVyZT1hZjI2N2Q1ZWRhNWYwOTgxOWJlZjYyNzNkZDY3NDlmOTgxMjdmMjFmYmUwZTZmNGRmMzQ0ZjYyOTkxNTRlMTdj',
         'short_description':['Карбоновый AGM аккумулятор GENERAL ENERGO CB100-12',
         'Емкость 100 а.ч.',
         'Напряжение 12 В.',
@@ -125,9 +93,7 @@ def GetCard(request, id):
             card = element
             break
     prod_list = products['products']
-    print(card)
     data = {'data':{'products': prod_list, 'card':card}}
-    print(data)
     return render(request, 'card_page.html', data)
 
 def GetProducts(request):

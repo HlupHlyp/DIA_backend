@@ -18,7 +18,7 @@
           {% for set in data.card.sets %}
             {% for product in data.products %}
               {% if product.id == set.id %}
-                {% include 'card_item.html' with element=product %}
+                {% include 'card_item.html' with element=product amount=set.amount %}
               {% endif %}
             {% endfor %}
           {% endfor %}
