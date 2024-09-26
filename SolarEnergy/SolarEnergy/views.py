@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from datetime import date
 
-products = {'products':[
+items = {'items':[
         {'id':'solar_panel_1',
         'title': 'ПАНЕЛЬ СОЛНЕЧНАЯ 285 ВТ 24 В ПОЛИ', 
         'img': 'http://127.0.0.1:9000/solar-energy/solar_panel_1.gif',
@@ -27,7 +27,7 @@ products = {'products':[
         'Монокристаллические солнечные панели - это категория фотоэлектрических устройств, которые используются'
         ' для преобразования солнечного излучения в электрическую энергию. Они изготавливаются из одного'
         ' кристалла кремния, что делает их наиболее эффективными среди всех типов солнечных панелей.',
-        'specification': 'Тип: Монокристаллические \nМощность, ВТ: 450'
+        'specification': 'Тип: Монокристаллические \nМощность, ВТ: 450 \n'
         'Максимальный ток, А: 10.87 \nГабариты, мм: 2095х1039х35',
         'type':'solar_panel', 
         'cost': 17400
@@ -41,7 +41,7 @@ products = {'products':[
         'Монокристаллические солнечные панели - это категория фотоэлектрических устройств, которые используются'
         ' для преобразования солнечного излучения в электрическую энергию. Они изготавливаются из одного кристалла'
         ' кремния, что делает их наиболее эффективными среди всех типов солнечных панелей.',
-        'specification': 'Тип: Монокристаллические \nМощность, ВТ: 370'
+        'specification': 'Тип: Монокристаллические \nМощность, ВТ: 370 \n'
         'Максимальный ток, А: 10.70 \nГабариты, мм: 1755х1038х35',
         'type':'solar_panel', 
         'cost': 17850
@@ -140,53 +140,53 @@ products = {'products':[
         }
     ]}
 
-cards = {'cards':[
-    {'card_id':0,'card_amount':5,'sets':[{'id':'battery_2', 'amount':'2'}, {'id':'battery_2','amount':'3'}]},
-    {'card_id':1,'card_amount':9,'sets':[{'id':'battery_1', 'amount':'4'}, {'id':'solar_panel_1','amount':'3'},
+plant_reqs = {'plant_reqs':[
+    {'plant_req_id':0,'plant_req_amount':5,'sets':[{'id':'battery_2', 'amount':'2'}, {'id':'battery_2','amount':'3'}]},
+    {'plant_req_id':1,'plant_req_amount':9,'sets':[{'id':'battery_1', 'amount':'4'}, {'id':'solar_panel_1','amount':'3'},
      {'id':'solar_panel_2','amount':'2'}]}
     ]}
 
-def GetProduct(request, id):
-    prod_list = products['products']
-    product = {}
-    for element in prod_list:
-        if element['id'] == id: product = {'product': element}
-    return render(request, 'product_page.html', product)
+def GetItem(request, id):
+    items_list = items['items']
+    item = {}
+    for element in items_list:
+        if element['id'] == id: item = {'item': element}
+    return render(request, 'item_page.html', item)
 
-def GetCard(request, id):
-    card_list = cards['cards']
-    card = {}
-    for element in card_list:
-        if int(element['card_id']) == int(id):
-            card = element
+def GetPlantRequest(request, id):
+    plant_req_list = plant_reqs['plant_reqs']
+    plant_req = {}
+    for element in plant_req_list:
+        if int(element['plant_req_id']) == int(id):
+            plant_req = element
             break
-    prod_list = products['products']
-    data = {'data':{'products': prod_list, 'card':card}}
-    return render(request, 'card_page.html', data)
+    items_list = items['items']
+    data = {'data':{'items': items_list, 'plant_req':plant_req}}
+    return render(request, 'plant_req_page.html', data)
 
-def GetProducts(request):
+def GetPlantItems(request):
     input_text = request.GET.get('text','')
-    prod_list = products['products']
+    items_list = items['items']
     sorted_list = []
     data = {}
     if not input_text:
-        data = {'data':{'products':products['products'],'searchText':input_text}}
+        data = {'data':{'items':items['items'],'searchText':input_text}}
     else:
-        for product in prod_list:
+        for item in items_list:
             f = False
-            if input_text in product['title'] or input_text in product['long_description']: f = True
+            if input_text in item['title'] or input_text in item['long_description']: f = True
             if f == False:
-                for sign in product['short_description']:
+                for sign in item['short_description']:
                     if input_text in sign:
                         f = True
                         break
             if f == False:
-                for sign in product['specification']:
+                for sign in item['specification']:
                     if input_text in sign:
                         f = True
                         break
-            if f: sorted_list.append(product)
-        data = {'data':{'products':sorted_list,'searchText':input_text}}
-    return render(request, 'products.html', data)
+            if f: sorted_list.append(item)
+        data = {'data':{'items':sorted_list,'searchText':input_text}}
+    return render(request, 'plant_items_page.html', data)
 
     

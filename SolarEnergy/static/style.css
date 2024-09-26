@@ -23,7 +23,7 @@ body{
   margin-right: auto;
 }
 
-.card{
+.plant_req{
   background-color: #FFFFFF;
   display: flex;
   flex-direction: column;
@@ -163,7 +163,7 @@ body{
   cursor:pointer;
 }
 
-.prod_page_container{
+.item_page_container{
   margin-left: auto;
   margin-right: auto;
   width: 100%;
@@ -173,7 +173,7 @@ body{
   margin-top: 3vh;
 }
 
-.prod_page_half{
+.item_page_half{
   margin-left:20px;
   margin-right:20px;
   width:100%;
@@ -181,7 +181,7 @@ body{
   max-width:560px;
 }
 
-.prod_page_title{
+.item_page_title{
   margin-bottom: 18px;
   box-sizing: content-box;
   text-align: left;
@@ -191,7 +191,7 @@ body{
   font-weight: 600;
 }
 
-.prod_page_cost{
+.item_page_cost{
   box-sizing: content-box;
   text-align: left;
   font-family: 'Arial';
@@ -201,7 +201,7 @@ body{
   font-weight: 600;
 }
 
-.prod_page_description{
+.item_page_description{
   margin-top:20px;
   font-family:'Arial';
   font-weight:400;
@@ -212,7 +212,7 @@ body{
   text-align:left;
 }
 
-.prod_specification{
+.item_specification{
   margin-top:20px;
   font-family:'Arial';
   font-weight:400;
@@ -241,7 +241,7 @@ body{
   cursor:pointer;
 }
 
-.card_container{
+.plant_req_container{
   display:grid;
   gap: 20px;
   width: 90%;
@@ -251,7 +251,7 @@ body{
   margin-bottom: 20px;
 }
 
-.card_item{
+.plant_req_item{
   background-color: #FFFFFF;
   display: flex;
   flex-direction: row;
@@ -263,7 +263,7 @@ body{
   object-fit: contain;
 }
 
-.card_item_image{
+.plant_req_item_image{
   padding-left:1vh;
   padding-top:1vh;
   padding-bottom:1vh;
@@ -273,7 +273,7 @@ body{
   object-fit: contain;
 }
 
-.card_item_l_description{
+.plant_req_item_l_description{
   margin-right:auto;
   text-align: left;
   padding-left: 10px;
@@ -281,7 +281,7 @@ body{
   padding-bottom: 3px;
 }
 
-.card_item_r_description{
+.plant_req_item_r_description{
   padding-left: 10px;
   padding-right: 25px;
   padding-top: 3px;
@@ -293,7 +293,7 @@ body{
 
 }
 
-.card_item_amount{
+.plant_req_item_amount{
   color: #46735b;
   font-size: 17px;
   font-family: 'Arial';
@@ -304,7 +304,7 @@ body{
 
 }
 
-.card_item_cost{
+.plant_req_item_cost{
   font-size:26px;
   padding-right:1px;
   color: #46735b;
@@ -327,7 +327,7 @@ body{
   font-weight: 500;
 }
 
-.card_button{
+.plant_req_button{
   background-color:#ffffff;
   width: 70px;
   margin-left:none;

@@ -19,7 +19,7 @@ from django.urls import path
 from SolarEnergy import views
 
 urlpatterns = [
-    path('', views.GetProducts),
-    path('card/<str:id>', views.GetCard, name='card_url'),
-    path('product/<str:id>/', views.GetProduct, name='product_url'),
+    path('', views.GetPlantItems),
+    path('plant_req/<str:id>', views.GetPlantRequest, name='plant_req_url'),
+    path('item/<str:id>/', views.GetItem, name='item_url'),
 ]
