@@ -57,6 +57,7 @@ body{
   font-family: 'Arial';
   margin-top: 8px;
   line-height: 1.55;
+  white-space: pre-line;
 }
 
 .info{
@@ -102,11 +103,12 @@ body{
 
 .header{
   background-color:#ffffff;
-  height:7vh;
+  height:14vh;
   width:100%;
   margin-bottom: 0px;
   align-content: center;
   display:flex;
+  margin-bottom:2vh;
 }
 
 .top_line{
@@ -118,33 +120,32 @@ body{
   display:flex;
 }
 
-.card_button{
-  background-color:#ffffff;
-  width: 70px;
-  margin-left:none;
-  margin-right: auto;
-  height:45px;
-  border: 2px solid #46735b;
-  box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
-}
-
-.search{
-  width: 80%;
+.input_back{
   height: 45px;
-  margin-left: auto;
-  margin-right: 2%;
   margin-bottom: 15px;
   display:flex;
   box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
   border: 2px solid #46735b;
+  min-width:200px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.search_input{
+.input{
   width:100%;
   font-size:18px;
   padding-left:10px;
   padding-right:10px;
   border:none;
+}
+
+.app_line{
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  gap: 2vw;
 }
 
 .search_button{
@@ -169,6 +170,7 @@ body{
   max-width: 1200px;
   box-sizing: content-box;
   display:flex;
+  margin-top: 3vh;
 }
 
 .prod_page_half{
@@ -210,7 +212,7 @@ body{
   text-align:left;
 }
 
-.prod_short_description{
+.prod_specification{
   margin-top:20px;
   font-family:'Arial';
   font-weight:400;
@@ -219,6 +221,7 @@ body{
   line-height:1.55;
   box-sizing:content-box;
   text-align:left;
+  white-space: pre-line;
 }
 
 .back_button{
@@ -240,12 +243,12 @@ body{
 
 .card_container{
   display:grid;
-  grid-template-rows: repeat(4,1fr);
   gap: 20px;
   width: 90%;
   margin-left: auto;
   margin-right: auto;
   box-sizing:content-box;
+  margin-bottom: 20px;
 }
 
 .card_item{
@@ -309,4 +312,27 @@ body{
   line-height:1.35;
   margin-top:12px;
   font-family: 'Arial';
+}
+
+.elements_amount{
+  position: absolute;
+  color: rgb(176, 16, 16);
+  align-content: center;
+  text-align:center;
+  width: 70px;
+  height:45px;
+  margin-left: 4px;
+  border-radius: 23px;
+  font-family: 'Arial';
+  font-weight: 500;
+}
+
+.card_button{
+  background-color:#ffffff;
+  width: 70px;
+  margin-left:none;
+  margin-right: auto;
+  height:45px;
+  border: 2px solid #46735b;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
 }

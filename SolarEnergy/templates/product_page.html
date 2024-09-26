@@ -1,4 +1,5 @@
 {% load static %}
+{% include 'header.html' %}
 <!DOCTYPE html>
 <html lang="rus">
   <head>
@@ -11,10 +12,7 @@
   <body>
 
     <div class="space">
-        <div class="header" style="margin-bottom: 30px;">
-          <a href="/" class="back_button">&#8592 Вернуться в каталог</a>
-        </div>
-        
+        {{header}}
         <div class = "prod_page_container">
           <img src="{{product.img}}" class = "prod_page_half">
           <div class="prod_page_half">
@@ -23,11 +21,7 @@
             <div class="prod_page_description">
               <b>Описание </b><br>
               {{product.long_description}}
-              <div class="prod_page_description">
-                {% for str in product.specification %}
-                  {{str}} <br>
-                {% endfor %}
-              </div>
+              <div class="prod_specification">{{product.specification}}</div>
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 {% load static %}
+{% include 'header.html' %}
 <!DOCTYPE html>
 <html lang="rus">
   <head>
@@ -11,16 +12,16 @@
   <body>
 
     <div class="space">
-        <div class="header">
-        </div>
+        {{header}}
         <div class="top_line">
-          <form action="." method="GET" class="search">
-            <input name="text" type="text" class="search_input" value="{{data.searchText}}"><br><br>
+          <form action="." method="GET" class="input_back" style="margin-right:2%;">
+            <input name="text" type="text" class="input" value="{{data.searchText}}"><br><br>
           </form>
           <div class = "card_button">
             <a href="/card/1">
-            <img class = "image" src="https://optim.tildacdn.com/tild6131-3961-4264-b230-396236303062/-/resize/120x/-/format/webp/icons8--100_1.png">
+              <div class = "elements_amount">9</div>
             </a>
+            <img class = "image" src="http://127.0.0.1:9000/solar-energy/card.png">
           </div>
         </div>
         

@@ -2,11 +2,7 @@
     <img src="{{ element.img }}" class="card_item_image">
     <div class="card_item_l_description">
         <div class="title">{{ element.title }}</div>
-        <div class="short-description"> 
-            {% for str in element.specification %}
-            {{str}} <br>
-            {% endfor %}
-        </div>
+        <div class="short-description">{{ element.specification }}</div>
     </div>
     <div class="card_item_r_description">
         <div class = "card_item_cost">{{ element.cost }} р.</div>

@@ -3,11 +3,7 @@
     <img src="{{ element.img }}" class="image">
     <div class="info">
         <div class="title">{{ element.title }}</div>
-        <div class="short-description"> 
-            {% for str in element.short_description %}
-            {{str}} <br>
-            {% endfor %}
-        </div>
+        <div class="short-description">{{ element.short_description }}</div>
         <div class = "cost" >{{ element.cost }} р.</div>
     </div>
     <div class="down">

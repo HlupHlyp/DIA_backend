@@ -1,4 +1,5 @@
 {% load static %}
+{% include 'header.html' %}
 <!DOCTYPE html>
 <html lang="rus">
   <head>
@@ -9,10 +10,15 @@
     <link rel="stylesheet" type="text/css" href="{% static 'examp.css' %}">
   </head>
   <body>
-
     <div class="space">
-        <div class="header">
-            <a href="/" class="back_button">&#8592 Вернуться в каталог</a>
+        {{header}}
+        <div class="app_line">
+          <div class="input_back">
+            <input name="fio" type="text" class="input" value="" placeholder="ФИО">
+          </div>
+          <div class="input_back">
+            <input name="latitude" type="text" class="input" value="" placeholder="Широта">
+          </div>
         </div>
         <div class="card_container">
           {% for set in data.card.sets %}
@@ -22,6 +28,17 @@
               {% endif %}
             {% endfor %}
           {% endfor %}
+        </div>
+        <div class="app_line">
+          <div class="input_back">
+            <input name="cost" type="text" class="input" value="" placeholder="Цена" readonly>
+          </div>
+          <div class="input_back">
+            <input name="generation" type="text" class="input" value="" placeholder="Генерация" readonly>
+          </div>
+          <div class="input_back">
+            <input name="saving" type="text" class="input" value="" placeholder="Сбережение" readonly>
+          </div>
         </div>
     </div>
   </body>
