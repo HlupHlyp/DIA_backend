@@ -23,7 +23,7 @@ body{
   margin-right: auto;
 }
 
-.card{
+.plant_req{
   background-color: #FFFFFF;
   display: flex;
   flex-direction: column;
@@ -57,6 +57,7 @@ body{
   font-family: 'Arial';
   margin-top: 8px;
   line-height: 1.55;
+  white-space: pre-line;
 }
 
 .info{
@@ -102,11 +103,12 @@ body{
 
 .header{
   background-color:#ffffff;
-  height:7vh;
+  height:14vh;
   width:100%;
   margin-bottom: 0px;
   align-content: center;
   display:flex;
+  margin-bottom:2vh;
 }
 
 .top_line{
@@ -118,33 +120,32 @@ body{
   display:flex;
 }
 
-.card_button{
-  background-color:#ffffff;
-  width: 70px;
-  margin-left:none;
-  margin-right: auto;
-  height:45px;
-  border: 2px solid #46735b;
-  box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
-}
-
-.search{
-  width: 80%;
+.input_back{
   height: 45px;
-  margin-left: auto;
-  margin-right: 2%;
   margin-bottom: 15px;
   display:flex;
   box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
   border: 2px solid #46735b;
+  min-width:200px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.search_input{
+.input{
   width:100%;
   font-size:18px;
   padding-left:10px;
   padding-right:10px;
   border:none;
+}
+
+.app_line{
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  gap: 2vw;
 }
 
 .search_button{
@@ -162,16 +163,17 @@ body{
   cursor:pointer;
 }
 
-.prod_page_container{
+.item_page_container{
   margin-left: auto;
   margin-right: auto;
   width: 100%;
   max-width: 1200px;
   box-sizing: content-box;
   display:flex;
+  margin-top: 3vh;
 }
 
-.prod_page_half{
+.item_page_half{
   margin-left:20px;
   margin-right:20px;
   width:100%;
@@ -179,7 +181,7 @@ body{
   max-width:560px;
 }
 
-.prod_page_title{
+.item_page_title{
   margin-bottom: 18px;
   box-sizing: content-box;
   text-align: left;
@@ -189,7 +191,7 @@ body{
   font-weight: 600;
 }
 
-.prod_page_cost{
+.item_page_cost{
   box-sizing: content-box;
   text-align: left;
   font-family: 'Arial';
@@ -199,7 +201,7 @@ body{
   font-weight: 600;
 }
 
-.prod_page_description{
+.item_page_description{
   margin-top:20px;
   font-family:'Arial';
   font-weight:400;
@@ -210,7 +212,7 @@ body{
   text-align:left;
 }
 
-.prod_short_description{
+.item_specification{
   margin-top:20px;
   font-family:'Arial';
   font-weight:400;
@@ -219,6 +221,7 @@ body{
   line-height:1.55;
   box-sizing:content-box;
   text-align:left;
+  white-space: pre-line;
 }
 
 .back_button{
@@ -238,39 +241,37 @@ body{
   cursor:pointer;
 }
 
-.card_container{
+.plant_req_container{
   display:grid;
-  grid-template-rows: repeat(4,1fr);
   gap: 20px;
   width: 90%;
   margin-left: auto;
   margin-right: auto;
   box-sizing:content-box;
+  margin-bottom: 20px;
 }
 
-.card_item{
+.plant_req_item{
   background-color: #FFFFFF;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   box-sizing: content-box;
   box-shadow: 0px 0px 5px #00000080;
-  margin-bottom: 20px;
-  height:100%;
   object-fit: contain;
 }
 
-.card_item_image{
+.plant_req_item_image{
   padding-left:1vh;
   padding-top:1vh;
   padding-bottom:1vh;
   max-width:40%;
-  max-height:25vh;
+  height:23vh;
   box-sizing: content-box;
   object-fit: contain;
 }
 
-.card_item_l_description{
+.plant_req_item_l_description{
   margin-right:auto;
   text-align: left;
   padding-left: 10px;
@@ -278,7 +279,7 @@ body{
   padding-bottom: 3px;
 }
 
-.card_item_r_description{
+.plant_req_item_r_description{
   padding-left: 10px;
   padding-right: 25px;
   padding-top: 3px;
@@ -290,7 +291,7 @@ body{
 
 }
 
-.card_item_amount{
+.plant_req_item_amount{
   color: #46735b;
   font-size: 17px;
   font-family: 'Arial';
@@ -301,7 +302,7 @@ body{
 
 }
 
-.card_item_cost{
+.plant_req_item_cost{
   font-size:26px;
   padding-right:1px;
   color: #46735b;
@@ -309,4 +310,28 @@ body{
   line-height:1.35;
   margin-top:12px;
   font-family: 'Arial';
+}
+
+.elements_amount{
+  position: absolute;
+  color: rgb(176, 16, 16);
+  align-content: center;
+  text-align:center;
+  width: 70px;
+  height:45px;
+  margin-left: 4px;
+  border-radius: 23px;
+  font-family: 'Arial';
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.plant_req_button{
+  background-color:#ffffff;
+  width: 70px;
+  margin-left:none;
+  margin-right: auto;
+  height:45px;
+  border: 2px solid #46735b;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
 }
