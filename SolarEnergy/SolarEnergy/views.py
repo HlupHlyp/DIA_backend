@@ -141,7 +141,7 @@ items = {'items':[
     ]}
 
 plant_reqs = {'plant_reqs':[
-    {'plant_req_id':0,'plant_req_amount':5,'sets':[{'id':'battery_2', 'amount':'2'}, {'id':'battery_2','amount':'3'}]},
+    {'plant_req_id':0,'plant_req_amount':5,'sets':[{'id':'battery_2', 'amount':'2'}, {'id':'solar_panel_2','amount':'3'}]},
     {'plant_req_id':1,'plant_req_amount':9,'sets':[{'id':'battery_1', 'amount':'4'}, {'id':'solar_panel_1','amount':'3'},
      {'id':'solar_panel_2','amount':'2'}]}
     ]}
