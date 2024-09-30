@@ -1,6 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from datetime import date
+from SolarEnergy.models import item_model
+import psycopg2
 
 items = {'items':[
         {'id':'solar_panel_1',
@@ -165,12 +167,27 @@ def GetPlantRequest(request, id):
     return render(request, 'plant_req_page.html', data)
 
 def GetPlantItems(request):
+    #conn = psycopg2.connect(dbname="solarenergy", host="127.0.0.1", user="student", password="root", port="5432")
+    #cursor = conn.cursor()
+    #cursor.execute('SELECT * FROM items')
+    #rows = cursor.fetchall()
+    #for table in rows:
+    #    print(table)
+    #conn.close()
+
+    #print(item_model.objects.all())
+    #print(temp_str)
+    temp_list = []
+    for item in item_model.objects.values():
+        item['short_description'] = str(item['short_description']).replace('!','\n')
+        temp_list.append(item)
+
     input_text = request.GET.get('text','')
     items_list = items['items']
     sorted_list = []
     data = {}
     if not input_text:
-        data = {'data':{'items':items['items'],'searchText':input_text}}
+        data = {'data':{'items':temp_list,'searchText':input_text}}
     else:
         for item in items_list:
             f = False
