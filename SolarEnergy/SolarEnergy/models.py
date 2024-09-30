@@ -17,3 +17,24 @@ class item_model(models.Model):
     class Meta:
         managed = False
         db_table = 'items'
+class plant_model(models.Model):
+    plant_id = models.IntegerField(primary_key=True)
+    plant_status = models.CharField(max_length = 50)
+    creation_date = models.DateTimeField()
+    forming_date = models.DateTimeField()
+    finishing_date = models.DateTimeField()
+    creator_login = models.CharField(max_length=50)
+    moderator_login = models.CharField(max_length=50)
+    generation = models.
+    saving = models.
+    latitude = models.
+    fio = models.
+    class Meta:
+        managed = False
+        db_table = 'plants'
+
+class item2plant_model(models.Model):
+    
+    class Meta:
+        managed = False
+        db_table = 'item2plant'
