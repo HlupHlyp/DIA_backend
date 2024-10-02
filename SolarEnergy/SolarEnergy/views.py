@@ -5,12 +5,6 @@ from SolarEnergy.models import item_model, plant_model, item2plant_model
 import psycopg2
 from django.db.models import Max
 
-plant_reqs = {'plant_reqs':[
-    {'plant_req_id':0,'plant_req_amount':5,'sets':[{'id':'battery_2', 'amount':'2'}, {'id':'solar_panel_2','amount':'3'}]},
-    {'plant_req_id':1,'plant_req_amount':9,'sets':[{'id':'battery_1', 'amount':'4'}, {'id':'solar_panel_1','amount':'3'},
-     {'id':'solar_panel_2','amount':'2'}]}
-    ]}
-
 def GetItems():
     items = []
     for item in item_model.objects.values():
@@ -89,11 +83,12 @@ def Add2Plant(request, login='andrew'):
         item2plant.save()
     return GetPlantItems(request)
     
-def DelPlant(request, login='andrew'):
+def DelPlant(request, login, plant_id):
     print("!")
+    print[creator_login]
+    conn = psycopg2.connect(dbname="solarenergy", host="127.0.0.1", user="student", password="root", port="5432")
+    cursor = conn.cursor()
     return GetPlantItems(request)
-     #conn = psycopg2.connect(dbname="solarenergy", host="127.0.0.1", user="student", password="root", port="5432")
-    #cursor = conn.cursor()
     #cursor.execute('SELECT * FROM items')
     #rows = cursor.fetchall()
     #for table in rows:
