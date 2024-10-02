@@ -22,5 +22,6 @@ urlpatterns = [
     path('', views.GetPlantItems),
     path('plant_req/<str:login>', views.GetPlantRequest, name='plant_req_url'),
     path('item/<str:id>/', views.GetItem, name='item_url'),
-    path('add2plant', views.add2plant)
+    path('add2plant', views.Add2Plant),
+    path('del_lant', views.DelPlant)
 ]

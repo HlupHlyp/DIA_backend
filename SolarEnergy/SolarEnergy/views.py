@@ -33,27 +33,18 @@ def GetPlantRequest(request, login = 'andrew'):
     plants_list = plant_model.objects.values()
     item2plant_list = item2plant_model.objects.values()
     plant_items = []
+    temp_plant = {}
     for plant in plants_list:
         if plant['creator_login'] == login and plant['plant_status'] == 'draft':
+            temp_plant = plant
             for item in item2plant_list:
                 if item['plant_id'] == plant['plant_id']:
                     plant_items.append(item)
             break
-    data = {'data':{'items': GetItems(), 'plant_req':plant_items}}
+    data = {'data':{'items': GetItems(), 'plant_req':plant_items, 'plant':temp_plant}}
     return render(request, 'plant_req_page.html', data)
 
 def GetPlantItems(request):
-    #conn = psycopg2.connect(dbname="solarenergy", host="127.0.0.1", user="student", password="root", port="5432")
-    #cursor = conn.cursor()
-    #cursor.execute('SELECT * FROM items')
-    #rows = cursor.fetchall()
-    #for table in rows:
-    #    print(table)
-    #conn.close()
-
-    #print(item_model.objects.all())
-    #print(temp_str)
-
     input_text = request.GET.get('text','')
     data = {}
     items_list = GetItems()
@@ -79,7 +70,7 @@ def GetPlantItems(request):
         data = {'data':{'items':sorted_list,'searchText':input_text}}
     return render(request, 'plant_items_page.html', data)
 
-def add2plant(request, login='andrew'):
+def Add2Plant(request, login='andrew'):
     temp_item_id = request.POST['item_id']
     temp_plant_id = 0
     for plant in plant_model.objects.values():
@@ -98,4 +89,16 @@ def add2plant(request, login='andrew'):
         item2plant.save()
     return GetPlantItems(request)
     
-    
+def DelPlant(request, login='andrew'):
+    print("!")
+    return GetPlantItems(request)
+     #conn = psycopg2.connect(dbname="solarenergy", host="127.0.0.1", user="student", password="root", port="5432")
+    #cursor = conn.cursor()
+    #cursor.execute('SELECT * FROM items')
+    #rows = cursor.fetchall()
+    #for table in rows:
+    #    print(table)
+    #conn.close()
+
+    #print(item_model.objects.all())
+    #print(temp_str)
