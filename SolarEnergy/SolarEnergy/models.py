@@ -25,16 +25,19 @@ class plant_model(models.Model):
     finishing_date = models.DateTimeField()
     creator_login = models.CharField(max_length=50)
     moderator_login = models.CharField(max_length=50)
-    generation = models.
-    saving = models.
-    latitude = models.
-    fio = models.
+    generation = models.DecimalField(decimal_places=2, max_digits=10)
+    saving = models.DecimalField(decimal_places=2, max_digits=10)
+    latitude = models.DecimalField(decimal_places=5, max_digits=8)
+    fio = models.CharField(max_length=255)
     class Meta:
         managed = False
         db_table = 'plants'
 
 class item2plant_model(models.Model):
-    
+    relate_id = models.IntegerField(primary_key = True)
+    item_id = models.IntegerField()
+    plant_id = models.IntegerField()
+    amount = models.IntegerField()
     class Meta:
         managed = False
         db_table = 'item2plant'

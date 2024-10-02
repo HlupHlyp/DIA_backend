@@ -20,6 +20,7 @@ from SolarEnergy import views
 
 urlpatterns = [
     path('', views.GetPlantItems),
-    path('plant_req/<str:id>', views.GetPlantRequest, name='plant_req_url'),
+    path('plant_req/<str:login>', views.GetPlantRequest, name='plant_req_url'),
     path('item/<str:id>/', views.GetItem, name='item_url'),
+    path('add2plant', views.add2plant)
 ]

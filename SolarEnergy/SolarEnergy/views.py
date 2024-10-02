@@ -1,14 +1,23 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from datetime import date
-from SolarEnergy.models import item_model
+from SolarEnergy.models import item_model, plant_model, item2plant_model
 import psycopg2
+from django.db.models import Max
 
 plant_reqs = {'plant_reqs':[
     {'plant_req_id':0,'plant_req_amount':5,'sets':[{'id':'battery_2', 'amount':'2'}, {'id':'solar_panel_2','amount':'3'}]},
     {'plant_req_id':1,'plant_req_amount':9,'sets':[{'id':'battery_1', 'amount':'4'}, {'id':'solar_panel_1','amount':'3'},
      {'id':'solar_panel_2','amount':'2'}]}
     ]}
+
+def GetItems():
+    items = []
+    for item in item_model.objects.values():
+        item['short_description'] = str(item['short_description']).replace('!','\n')
+        item['specification'] = str(item['specification']).replace('!','\n')
+        items.append(item)
+    return items   
 
 def GetItem(request, id):
     items_list = item_model.objects.values()
@@ -19,15 +28,18 @@ def GetItem(request, id):
             item = {'item': element}
     return render(request, 'item_page.html', item)
 
-def GetPlantRequest(request, id):
-    plant_req_list = plant_reqs['plant_reqs']
-    plant_req = {}
-    for element in plant_req_list:
-        if int(element['plant_req_id']) == int(id):
-            plant_req = element
+def GetPlantRequest(request, login = 'andrew'):
+    plant = {}
+    plants_list = plant_model.objects.values()
+    item2plant_list = item2plant_model.objects.values()
+    plant_items = []
+    for plant in plants_list:
+        if plant['creator_login'] == login and plant['plant_status'] == 'draft':
+            for item in item2plant_list:
+                if item['plant_id'] == plant['plant_id']:
+                    plant_items.append(item)
             break
-    items_list = items['items']
-    data = {'data':{'items': items_list, 'plant_req':plant_req}}
+    data = {'data':{'items': GetItems(), 'plant_req':plant_items}}
     return render(request, 'plant_req_page.html', data)
 
 def GetPlantItems(request):
@@ -44,12 +56,8 @@ def GetPlantItems(request):
 
     input_text = request.GET.get('text','')
     data = {}
-    items_list = []
+    items_list = GetItems()
     sorted_list = []
-
-    for item in item_model.objects.values():
-        item['short_description'] = str(item['short_description']).replace('!','\n')
-        items_list.append(item)
 
     if not input_text:
         data = {'data':{'items':items_list,'searchText':input_text}}
@@ -71,4 +79,23 @@ def GetPlantItems(request):
         data = {'data':{'items':sorted_list,'searchText':input_text}}
     return render(request, 'plant_items_page.html', data)
 
+def add2plant(request, login='andrew'):
+    temp_item_id = request.POST['item_id']
+    temp_plant_id = 0
+    for plant in plant_model.objects.values():
+        if plant['creator_login'] == login and plant['plant_status'] == 'draft':
+            temp_plant_id = int(plant['plant_id'])
+            break
+    records = item2plant_model.objects.filter(item_id = temp_item_id, plant_id = temp_plant_id).values()
+    if not records:
+        max_id = item2plant_model.objects.aggregate(Max('relate_id'))
+        item2plant = item2plant_model(item_id=temp_item_id, plant_id = temp_plant_id, amount = 1, 
+        relate_id = max_id['relate_id__max'] + 1)
+        item2plant.save()
+    else:
+        item2plant = item2plant_model.objects.get(item_id = temp_item_id, plant_id = temp_plant_id)
+        item2plant.amount = item2plant.amount+1
+        item2plant.save()
+    return GetPlantItems(request)
+    
     
