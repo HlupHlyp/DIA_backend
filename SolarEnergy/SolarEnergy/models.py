@@ -34,7 +34,7 @@ class plant_model(models.Model):
         db_table = 'plants'
 
 class item2plant_model(models.Model):
-    relate_id = models.IntegerField(primary_key = True)
+    unique_together = (('item_id', 'plant_id'),)
     item_id = models.IntegerField()
     plant_id = models.IntegerField()
     amount = models.IntegerField()
