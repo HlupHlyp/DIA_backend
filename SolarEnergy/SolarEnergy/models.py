@@ -1,7 +1,8 @@
 from django.db import models
+import uuid
 
 class item_model(models.Model):
-    item_id = models.IntegerField(primary_key=True)
+    item_id = models.AutoField(primary_key=True)
     item_status = models.CharField(max_length=20)
     item_name = models.CharField(max_length=200)
     img_link = models.CharField(max_length=200)
@@ -18,7 +19,7 @@ class item_model(models.Model):
         managed = False
         db_table = 'items'
 class plant_model(models.Model):
-    plant_id = models.IntegerField(primary_key=True)
+    plant_id = models.AutoField(primary_key=True)
     plant_status = models.CharField(max_length = 50)
     creation_date = models.DateTimeField()
     forming_date = models.DateTimeField()
@@ -34,10 +35,13 @@ class plant_model(models.Model):
         db_table = 'plants'
 
 class item2plant_model(models.Model):
-    unique_together = (('item_id', 'plant_id'),)
+    relate_id = models.AutoField(primary_key=True)
     item_id = models.IntegerField()
     plant_id = models.IntegerField()
     amount = models.IntegerField()
     class Meta:
         managed = False
         db_table = 'item2plant'
+        constraints = [
+            models.UniqueConstraint(fields=['item_id', 'plant_id'], name='unique item in plant')
+        ]

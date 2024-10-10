@@ -5,63 +5,33 @@ from SolarEnergy.models import item_model, plant_model, item2plant_model
 import psycopg2
 from django.db.models import Max
 
-def GetItems():
-    items = []
-    for item in item_model.objects.values():
-        item['short_description'] = str(item['short_description']).replace('!','\n')
-        item['specification'] = str(item['specification']).replace('!','\n')
-        items.append(item)
-    return items   
+def AddLineChanges(items):
+    for item in items:
+        item['short_description'] = item['short_description'].replace('!', '\n')
+        item['specification'] = item['specification'].replace('!', '\n')
+    return items
 
 def GetItem(request, id):
-    items_list = item_model.objects.values()
-    item = {}
-    for element in items_list:
-        if element['item_id'] == int(id): 
-            element['specification'] = str(element['specification']).replace('!','\n')
-            item = {'item': element}
+    item = item_model.objects.filter(item_id = id).values()
     return render(request, 'item_page.html', item)
 
-def GetPlantRequest(request, login = 'andrew'):
-    plant = {}
-    plants_list = plant_model.objects.values()
-    item2plant_list = item2plant_model.objects.values()
+def GetPlantRequest(request, id):
     plant_items = []
-    temp_plant = {}
-    for plant in plants_list:
-        if plant['creator_login'] == login and plant['plant_status'] == 'draft':
-            temp_plant = plant
-            for item in item2plant_list:
-                if item['plant_id'] == plant['plant_id']:
-                    plant_items.append(item)
-            break
-    data = {'data':{'items': GetItems(), 'plant_req':plant_items, 'plant':temp_plant}}
+    plant = plant_model.objects.get(creator_login = login, plant_status = 'draft')
+    temp_plant = plant_model.objects.filter(creator_login = login, plant_status = 'draft').values()
+    item2plant_list = item2plant_model.objects.filter(plant_id = plant.plant_id).values()
+    for item2plant in item2plant_list:
+        plant_items.append(item2plant)
+    data = {'data':{'items': AddLineChanges(item_model.objects.values()), 'plant_req':plant_items, 'plant':temp_plant}}
     return render(request, 'plant_req_page.html', data)
 
 def GetPlantItems(request):
-    input_text = request.GET.get('text','')
-    data = {}
-    items_list = GetItems()
-    sorted_list = []
-
-    if not input_text:
-        data = {'data':{'items':items_list,'searchText':input_text}}
-    else:
-        for item in items_list:
-            f = False
-            if input_text in item['item_name'] or input_text in item['long_description']: f = True
-            if f == False:
-                for sign in item['short_description']:
-                    if input_text in sign:
-                        f = True
-                        break
-            if f == False:
-                for sign in item['specification']:
-                    if input_text in sign:
-                        f = True
-                        break
-            if f: sorted_list.append(item)
-        data = {'data':{'items':sorted_list,'searchText':input_text}}
+    search_request = request.GET.get('search_request','')
+    sorted_list= [] 
+    for item in ((item_model.objects.filter(item_name__icontains=search_request) or item_model.objects.filter(long_description__icontains=search_request) 
+    or item_model.objects.filter(short_description__icontains=search_request)) and item_model.objects.filter(item_status = 'active')).values():
+        sorted_list.append(item)
+    data = {'data':{'items':AddLineChanges(sorted_list),'searchText':search_request}}
     return render(request, 'plant_items_page.html', data)
 
 def Add2Plant(request, login='andrew'):
@@ -85,9 +55,9 @@ def Add2Plant(request, login='andrew'):
     
 def DelPlant(request, login, plant_id):
     print("!")
-    print[creator_login]
-    conn = psycopg2.connect(dbname="solarenergy", host="127.0.0.1", user="student", password="root", port="5432")
-    cursor = conn.cursor()
+    #print[creator_login]
+    #conn = psycopg2.connect(dbname="solarenergy", host="127.0.0.1", user="student", password="root", port="5432")
+    #cursor = conn.cursor()
     return GetPlantItems(request)
     #cursor.execute('SELECT * FROM items')
     #rows = cursor.fetchall()
