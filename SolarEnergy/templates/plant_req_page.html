@@ -14,16 +14,16 @@
         {{header}}
         <div class="app_line">
           <div class="input_back">
-            <input name="fio" type="text" class="input" value="" placeholder="ФИО">
+            <input name="fio" type="text" class="input" value="{{data.plant_req.fio}}" placeholder="ФИО">
           </div>
           <div class="input_back">
-            <input name="latitude" type="text" class="input" value="" placeholder="Широта">
+            <input name="latitude" type="text" class="input" value="{{data.plant_req.latitude}}" placeholder="Широта">
           </div>
         </div>
         <div class="plant_req_container">
-          {% for set in data.plant_req.sets %}
+          {% for set in data.plant_req %}
             {% for item in data.items %}
-              {% if item.id == set.id %}
+              {% if item.item_id == set.item_id %}
                 {% include 'plant_req_item.html' with element=item amount=set.amount %}
               {% endif %}
             {% endfor %}
@@ -31,14 +31,22 @@
         </div>
         <div class="app_line">
           <div class="input_back">
-            <input name="cost" type="text" class="input" value="" placeholder="Цена" readonly>
+            <input name="cost" type="text" class="input" value="{{data.plant_req.cost}}" placeholder="Цена" readonly>
           </div>
           <div class="input_back">
-            <input name="generation" type="text" class="input" value="" placeholder="Генерация" readonly>
+            <input name="generation" type="text" class="input" value="{{data.plant_req.generation}}" placeholder="Генерация" readonly>
           </div>
           <div class="input_back">
-            <input name="saving" type="text" class="input" value="" placeholder="Сбережение" readonly>
+            <input name="saving" type="text" class="input" value="{{data.plant_req.saving}}" placeholder="Сбережение" readonly>
           </div>
+        </div>
+        <div class="act_line">
+          <form action="del_plant" method="post" style="margin-top:0;" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" name="plant_id" value="{{data.plant.plant_id}}" 
+            style="visibility:hidden;height:0;padding-top:0;padding-bottom:0;border:none;">
+            <input type="submit" class="descript-button" value="ОЧИСТИТЬ ЗАЯВКУ" style="width:40vw">
+          </form>
         </div>
     </div>
   </body>
