@@ -74,7 +74,8 @@ class ItemDetail(APIView):
     def delete(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
         del_pic(item_id)
-        item.delete()
+        item.item_status = "deleted"
+        item.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def post(self, request, item_id, format=None):
@@ -92,6 +93,13 @@ class ItemDetail(APIView):
 class UsersList(APIView):
     model_class = AuthUser
     serializer_class = UserSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, format=None):
         user = self.model_class.objects.all()
@@ -203,7 +211,6 @@ def plant_forming(request, plant_id, format=None):
 def plant_finishing(request, plant_id, format=None):
     plant_status = request.POST.get("plant_status")
     if plant_status in ["rejected", "completed"]:
-        print('!')
         plant = get_object_or_404(plant_model, plant_id = plant_id)
         serializer = PlantStatusSerializer(plant, data=request.data, partial=True)
         if serializer.is_valid():

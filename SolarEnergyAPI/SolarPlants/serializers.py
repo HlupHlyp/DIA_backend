@@ -60,8 +60,8 @@ class Item2PlantSerializer(serializers.ModelSerializer):
         fields = ["relate_id", "item_id", "plant_id", "amount"]
 
 class UserSerializer(serializers.ModelSerializer):
-    itemk_set = ItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = AuthUser
-        fields = ["id", "first_name", "last_name", "item_set"]
+        fields = ["password", "last_login", "is_superuser", "username", "last_name", "email", 
+        "is_staff", "is_active", "date_joined", "first_name"]
