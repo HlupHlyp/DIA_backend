@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from SolarPlants.serializers import ItemSerializer, PlantSerializer, Item2PlantSerializer, UserSerializer
+from SolarPlants.serializers import ItemSerializer, PlantSerializer, PlantChangeSerializer, Item2PlantSerializer, PlantFormingSerializer, PlantFinishingSerializer, UserSerializer
 from SolarPlants.models import item_model, plant_model, item2plant_model, AuthUser
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
@@ -125,3 +125,42 @@ class item2plant(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PlantDetail(APIView):
+    model_class = plant_model
+    serializer_class = PlantSerializer
+    partial_serializer_class = PlantChangeSerializer
+
+    def get(self, request, plant_id, format=None):
+        item_ids = []
+        items = []
+        plant = get_object_or_404(self.model_class, plant_id=plant_id)
+        items2plant = item2plant_model.objects.filter(plant_id = plant_id).values()
+        for item in items2plant:
+            item_ids.append(item['item_id'])
+        for id in item_ids:
+            items.append(item_model.objects.filter(item_id = id).values())
+        serializer = self.serializer_class(plant)
+        data = {"plant":serializer.data, "item2plant": items2plant, "items": items}
+        return Response(data)
+
+    def put(self, request, plant_id, format=None):
+        plant = get_object_or_404(self.model_class, plant_id=plant_id)
+
+        serializer = self.partial_serializer_class(plant, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def plant_forming(self, request, plant_id, format=None):
+    plant = get_object_or_404(self.model_class, plant_id = plant_id)
+    if request.POST.get('generation'): 
+        plant.generation = request.POST['generation']
+    serializer = PlantFormingSerializer(plant, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+   

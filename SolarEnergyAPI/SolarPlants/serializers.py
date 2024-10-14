@@ -26,9 +26,30 @@ class PlantSerializer(serializers.ModelSerializer):
     class Meta:
         # Модель, которую мы сериализуем
         model = plant_model
-        # Поля, которые мы сериализуем
+        # Поля, которые мы сериализуем  
         fields = ["plant_id", "plant_status", "creation_date", "forming_date", "finishing_date", "creator_login", "moderator_login", 
         "generation", "saving", "latitude", "fio", "user"]    
+
+class PlantChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        # Модель, которую мы сериализуем
+        model = plant_model
+        # Поля, которые мы сериализуем
+        fields = ["generation", "saving", "latitude", "fio"] 
+
+class PlantFormingSerializer(serializers.ModelSerializer):
+    class Meta:
+        # Модель, которую мы сериализуем
+        model = plant_model
+        # Поля, которые мы сериализуем
+        fields = ["plant_status", "forming_date"] 
+
+class PlantFinishingSerializer(serializers.ModelSerializer):
+    class Meta:
+        # Модель, которую мы сериализуем
+        model = plant_model
+        # Поля, которые мы сериализуем
+        fields = ["status", "plant_finishing_date", "moderator_login"] 
 
 class Item2PlantSerializer(serializers.ModelSerializer):
     class Meta:
