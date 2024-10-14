@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-from datetime import datetime
+import datetime
 class item_model(models.Model):
     item_statuses = {
         'active': 'active',
@@ -36,7 +36,7 @@ class plant_model(models.Model):
     }
     plant_id = models.AutoField(primary_key=True)
     plant_status = models.CharField(max_length=20, choices=plant_statuses, default = 'draft')
-    creation_date = models.DateTimeField(default = datetime.now)
+    creation_date = models.DateTimeField(default = datetime.datetime.now())
     forming_date = models.DateTimeField(default=None, blank=True, null=True)
     finishing_date = models.DateTimeField(default=None, blank=True, null=True)
     creator_login = models.CharField(max_length=50)

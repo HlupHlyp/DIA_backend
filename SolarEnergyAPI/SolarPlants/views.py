@@ -2,11 +2,12 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from SolarPlants.serializers import ItemSerializer, PlantSerializer, PlantChangeSerializer, Item2PlantSerializer, PlantFormingSerializer, PlantFinishingSerializer, UserSerializer
+from SolarPlants.serializers import ItemSerializer, PlantSerializer, PlantChangeSerializer, Item2PlantSerializer, PlantStatusSerializer, UserSerializer
 from SolarPlants.models import item_model, plant_model, item2plant_model, AuthUser
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from SolarPlants.minio import add_pic, del_pic
+import datetime
 
 def user():
     try:
@@ -153,14 +154,32 @@ class PlantDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-def plant_forming(self, request, plant_id, format=None):
-    plant = get_object_or_404(self.model_class, plant_id = plant_id)
-    if request.POST.get('generation'): 
-        plant.generation = request.POST['generation']
-    serializer = PlantFormingSerializer(plant, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, plant_id, format=None):
+        plant = get_object_or_404(plant_model, plant_id = plant_id)
+        plant.plant_status = "deleted"
+        plant.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['Put'])
+def plant_forming(request, plant_id, format=None):
+    plant = get_object_or_404(plant_model, plant_id = plant_id)
+    plant.plant_status = "formed"
+    plant.forming_date = datetime.datetime.now()
+    plant.save()
+    return Response(status=status.HTTP_206_PARTIAL_CONTENT)
+
+@api_view(['Put'])
+def plant_finishing(request, plant_id, format=None):
+    plant_status = request.POST.get("plant_status")
+    if plant_status in ["rejected", "completed"]:
+        print('!')
+        plant = get_object_or_404(plant_model, plant_id = plant_id)
+        serializer = PlantStatusSerializer(plant, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_206_PARTIAL_CONTENT)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
    

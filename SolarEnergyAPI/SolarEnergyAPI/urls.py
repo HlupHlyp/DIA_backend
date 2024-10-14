@@ -28,6 +28,8 @@ urlpatterns = [
     #path('items/<int:item_id>/post/', views.ItemDetail.as_view(), name='item-img-post'),
     path('item2plant/', views.item2plant.as_view(), name='item2plant'),
     path('plants/<int:plant_id>/', views.PlantDetail.as_view(), name='plant-detail'),
+    path('plants/<int:plant_id>/forming/', views.plant_forming, name='plant-forming'),
+    path('plants/<int:plant_id>/finishing/', views.plant_finishing, name='plant-finishing'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
     path('users/', views.UsersList.as_view(), name='users-list'),
