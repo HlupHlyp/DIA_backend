@@ -33,13 +33,10 @@ class ItemList(APIView):
         serializer = self.serializer_class(items, many=True)
         plants = plant_model.objects.filter(creator_login = creator_login, plant_status = "draft").values()
         for plant in plants:
-            print('!')
             plant_id = plant['plant_id']
         items2plant = item2plant_model.objects.filter(plant_id = plant_id).values()
         for item2plant in items2plant:
             amount+=item2plant['amount']
-        print(plant_id)
-        print(amount)
         plant_amount = 0
         data = {'items':serializer.data, 'plant_id':plant_id, 'amount':amount}
         return Response(data)
@@ -127,6 +124,29 @@ class item2plant(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class PlantList(APIView):
+    model_class = plant_model
+    serializerClass = PlantListSerializer
+
+    def get(self, request, format=None):
+        plant_id = 0
+        amount = 0
+        search_request = request.GET.get('search_request','')
+        print(search_request)
+        items = (item_model.objects.filter(item_name__icontains=search_request, item_status = 'active') 
+        or item_model.objects.filter(long_description__icontains=search_request, item_status = 'active') 
+        or item_model.objects.filter(short_description__icontains=search_request, item_status = 'active'))
+        serializer = self.serializer_class(items, many=True)
+        plants = plant_model.objects.filter(creator_login = creator_login, plant_status = "draft").values()
+        for plant in plants:
+            plant_id = plant['plant_id']
+        items2plant = item2plant_model.objects.filter(plant_id = plant_id).values()
+        for item2plant in items2plant:
+            amount+=item2plant['amount']
+        plant_amount = 0
+        data = {'items':serializer.data, 'plant_id':plant_id, 'amount':amount}
+        return Response(data)
+
 class PlantDetail(APIView):
     model_class = plant_model
     serializer_class = PlantSerializer
@@ -181,5 +201,7 @@ def plant_finishing(request, plant_id, format=None):
             return Response(status=status.HTTP_206_PARTIAL_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 
    

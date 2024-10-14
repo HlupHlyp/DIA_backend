@@ -20,7 +20,7 @@ class FullItemSerializer(serializers.ModelSerializer):
         model = item_model
         # Поля, которые мы сериализуем
         fields = ["item_id", "item_status", "item_name", "img_link", "short_description", "long_description", "specification", "item_cost", 
-        "item_type", "item_voltage", "item_capacity", "item_power", "user_id"]
+        "item_type", "item_voltage", "item_capacity", "item_power", "user_id"] 
 
 class PlantSerializer(serializers.ModelSerializer):
     class Meta:
