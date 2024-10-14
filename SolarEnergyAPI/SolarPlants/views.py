@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from SolarPlants.serializers import ItemSerializer, PlantSerializer, PlantChangeSerializer, Item2PlantSerializer, PlantStatusSerializer, UserSerializer
+from SolarPlants.serializers import ItemSerializer, PlantSerializer, PlantListSerializer, PlantChangeSerializer, Item2PlantSerializer, PlantStatusSerializer, UserSerializer
 from SolarPlants.models import item_model, plant_model, item2plant_model, AuthUser
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
@@ -26,7 +26,6 @@ class ItemList(APIView):
         plant_id = 0
         amount = 0
         search_request = request.GET.get('search_request','')
-        print(search_request)
         items = (item_model.objects.filter(item_name__icontains=search_request, item_status = 'active') 
         or item_model.objects.filter(long_description__icontains=search_request, item_status = 'active') 
         or item_model.objects.filter(short_description__icontains=search_request, item_status = 'active'))
@@ -126,26 +125,37 @@ class item2plant(APIView):
 
 class PlantList(APIView):
     model_class = plant_model
-    serializerClass = PlantListSerializer
+    serializer_class = PlantListSerializer
 
     def get(self, request, format=None):
-        plant_id = 0
-        amount = 0
-        search_request = request.GET.get('search_request','')
-        print(search_request)
-        items = (item_model.objects.filter(item_name__icontains=search_request, item_status = 'active') 
-        or item_model.objects.filter(long_description__icontains=search_request, item_status = 'active') 
-        or item_model.objects.filter(short_description__icontains=search_request, item_status = 'active'))
-        serializer = self.serializer_class(items, many=True)
-        plants = plant_model.objects.filter(creator_login = creator_login, plant_status = "draft").values()
-        for plant in plants:
-            plant_id = plant['plant_id']
-        items2plant = item2plant_model.objects.filter(plant_id = plant_id).values()
-        for item2plant in items2plant:
-            amount+=item2plant['amount']
-        plant_amount = 0
-        data = {'items':serializer.data, 'plant_id':plant_id, 'amount':amount}
-        return Response(data)
+        plants = []
+        plant_status = request.POST.get("plant_status")
+        status_f = False
+        bottom_date = request.POST.get("bottom_date")
+        bottom_f = False
+        top_date = request.POST.get("top_date")
+        top_f = False
+        if plant_status:
+            status_f = True
+            if not plant_status in ['rejected', 'completed', 'formed']:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        if top_date:
+            top_f = True
+        else: 
+            top_date = datetime.datetime.now()
+        if bottom_date:
+            top_f = True
+        else:
+            bottom_date = "2000-01-01"
+        if status_f:
+            plants = (plant_model.objects.filter(plant_status = plant_status) 
+            and plant_model.objects.filter(forming_date__range=[bottom_date, top_date]))
+        else:
+            plants = ((plant_model.objects.filter(plant_status = "completed") or plant_model.objects.filter(plant_status = "formed") 
+            or plant_model.objects.filter(plant_status = "rejected")) and plant_model.objects.filter(forming_date__range=[bottom_date, top_date]))
+
+        serializer = self.serializer_class(plants, many=True)
+        return Response(serializer.data)
 
 class PlantDetail(APIView):
     model_class = plant_model
