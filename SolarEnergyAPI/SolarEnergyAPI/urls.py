@@ -25,7 +25,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('items/', views.ItemList.as_view(), name='items-list'),
     path('items/<int:item_id>/', views.ItemDetail.as_view(), name='items-detail'),
-    path('items/<int:item_id>/add2plant', views.ItemDetail.as_view(), name='items-detail'),
+    path('items/<int:item_id>/add2plant/', views.add2plant, name='add2plant'),
     path('item2plant/', views.item2plant.as_view(), name='item2plant'),
     path('plants/', views.PlantList.as_view(), name='plant-list'),
     path('plants/<int:plant_id>/', views.PlantDetail.as_view(), name='plant-detail'),

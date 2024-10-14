@@ -212,6 +212,22 @@ def plant_finishing(request, plant_id, format=None):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['Post'])
+def add2plant(request, item_id, format=None):
+    get_object_or_404(plant_model, plant_id=request.POST.get('plant_id'))
+    get_object_or_404(item_model, item_id=item_id)
+    plant_id = request.POST.get('plant_id')
+    records = item2plant_model.objects.filter(item_id = item_id, plant_id = request.POST['plant_id']).values()
+    if not records:
+        item2plant = item2plant_model(item_id = item_id, plant_id = plant_id, amount = 1)
+        item2plant.save()
+    else:
+        item2plant = item2plant_model.objects.get(item_id = item_id, plant_id = plant_id)
+        item2plant.amount = item2plant.amount+1
+        item2plant.save()
+    return Response(status=status.HTTP_201_CREATED)
+
+
 
 
    
