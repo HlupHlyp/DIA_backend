@@ -34,4 +34,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
     path('users/', views.UsersList.as_view(), name='users-list'),
+    path('users/<int:user_id>/', views.UsersList.as_view(), name='users-edit'),
+    path('users/logout/', views.user_logout, name='users-edit'),
+    path('users/login/', views.user_login, name='users-edit'),
 ]

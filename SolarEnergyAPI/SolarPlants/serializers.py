@@ -63,5 +63,5 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AuthUser
-        fields = ["password", "last_login", "is_superuser", "username", "last_name", "email", 
+        fields = ["id","password", "last_login", "is_superuser", "username", "last_name", "email", 
         "is_staff", "is_active", "date_joined", "first_name"]

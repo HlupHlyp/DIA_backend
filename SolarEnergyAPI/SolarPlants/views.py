@@ -101,10 +101,14 @@ class UsersList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, format=None):
-        user = self.model_class.objects.all()
-        serializer = self.serializer_class(user, many=True)
-        return Response(serializer.data)
+    def put(self, request, user_id):
+        user = get_object_or_404(self.model_class, id = user_id)
+        serializer = self.serializer_class(user,data = request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response('Incorrect data', status=status.HTTP_400_BAD_REQUEST)
 
 class item2plant(APIView):
     model_class = item2plant_model
@@ -233,6 +237,14 @@ def add2plant(request, item_id, format=None):
         item2plant.amount = item2plant.amount+1
         item2plant.save()
     return Response(status=status.HTTP_201_CREATED)
+
+@api_view(['Post'])
+def user_login(request):
+    return Response('login',status=status.HTTP_200_OK)
+
+@api_view(['Post'])
+def user_logout(request):
+    return Response('logout',status=status.HTTP_200_OK)
 
 
 
