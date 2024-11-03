@@ -3,17 +3,18 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from SolarPlants.serializers import ItemSerializer, PlantSerializer, PlantListSerializer, PlantChangeSerializer, Item2PlantSerializer, PlantStatusSerializer, UserSerializer
-from SolarPlants.models import item_model, plant_model, item2plant_model, AuthUser
+from SolarPlants.models import item_model, plant_model, item2plant_model
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from SolarPlants.minio import add_pic, del_pic
 import datetime
+from django.contrib.auth.models import User
 
 def user():
     try:
-        user1 = AuthUser.objects.get(id=1)
+        user1 = User.objects.get(id=1)
     except:
-        user1 = AuthUser(id=1, first_name="Иван", last_name="Иванов", password=1234, username="user1")
+        user1 = User(id=1, first_name="Иван", last_name="Иванов", password=1234, username="user1")
         user1.save()
     return user1
 
@@ -31,13 +32,15 @@ class ItemList(APIView):
         or item_model.objects.filter(short_description__icontains=search_request, item_status = 'active'))
         serializer = self.serializer_class(items, many=True)
         plants = plant_model.objects.filter(creator_login = creator_login, plant_status = "draft").values()
-        for plant in plants:
-            plant_id = plant['plant_id']
-        items2plant = item2plant_model.objects.filter(plant_id = plant_id).values()
-        for item2plant in items2plant:
-            amount+=item2plant['amount']
-        plant_amount = 0
-        data = {'items':serializer.data, 'plant_id':plant_id, 'amount':amount}
+        if not plants:
+            data = {'items':serializer.data, 'plant_id':None, 'amount':None}
+        else:
+            for plant in plants:
+                plant_id = plant['plant_id']
+            items2plant = item2plant_model.objects.filter(plant_id = plant_id).values()
+            for item2plant in items2plant:
+                amount+=item2plant['amount']
+            data = {'items':serializer.data, 'plant_id':plant_id, 'amount':amount} 
         return Response(data)
 
     def post(self, request, format=None):
@@ -91,7 +94,7 @@ class ItemDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UsersList(APIView):
-    model_class = AuthUser
+    model_class = User
     serializer_class = UserSerializer
 
     def post(self, request, format=None):
@@ -141,15 +144,15 @@ class PlantList(APIView):
 
     def get(self, request, format=None):
         plants = []
-        plant_status = request.POST.get("plant_status")
+        req_plant_status = request.POST.get("plant_status")
         status_f = False
         bottom_date = request.POST.get("bottom_date")
         bottom_f = False
         top_date = request.POST.get("top_date")
         top_f = False
-        if plant_status:
+        if req_plant_status:
             status_f = True
-            if not plant_status in ['rejected', 'completed', 'formed']:
+            if not req_plant_status in ['rejected', 'completed', 'formed']:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         if top_date:
             top_f = True
@@ -160,14 +163,23 @@ class PlantList(APIView):
         else:
             bottom_date = "2000-01-01"
         if status_f:
-            plants = (plant_model.objects.filter(plant_status = plant_status) 
-            and plant_model.objects.filter(forming_date__range=[bottom_date, top_date]))
+            plants = (plant_model.objects.filter(plant_status = req_plant_status) 
+            & plant_model.objects.filter(forming_date__range=[bottom_date, top_date]))
+            print(req_plant_status)
+            print(plants)
         else:
-            plants = ((plant_model.objects.filter(plant_status = "completed") or plant_model.objects.filter(plant_status = "formed") 
-            or plant_model.objects.filter(plant_status = "rejected")) and plant_model.objects.filter(forming_date__range=[bottom_date, top_date]))
-
-        serializer = self.serializer_class(plants, many=True)
-        return Response(serializer.data)
+            plants = ((plant_model.objects.filter(plant_status = "completed") | plant_model.objects.filter(plant_status = "formed") 
+            | plant_model.objects.filter(plant_status = "rejected")) & plant_model.objects.filter(forming_date__range=[bottom_date, top_date]))
+            print(plants.values())
+            print(bottom_date)
+            print(top_date)
+            plants =  plant_model.objects.filter(forming_date__range=[bottom_date, top_date])
+            print(plants.values())
+        if not plants:
+            return Response(None)
+        else:
+            serializer = self.serializer_class(plants, many=True)
+            return Response(serializer.data)
 
 class PlantDetail(APIView):
     model_class = plant_model
@@ -175,16 +187,16 @@ class PlantDetail(APIView):
     partial_serializer_class = PlantChangeSerializer
 
     def get(self, request, plant_id, format=None):
-        item_ids = []
+        plant = plant_model.objects.get(plant_id = plant_id)
+        if not plant:
+            return Response(status=status.HTTP_400_BAD_REQUEST)  
         items = []
-        plant = get_object_or_404(self.model_class, plant_id=plant_id)
         items2plant = item2plant_model.objects.filter(plant_id = plant_id).values()
-        for item in items2plant:
-            item_ids.append(item['item_id'])
-        for id in item_ids:
-            items.append(item_model.objects.filter(item_id = id).values())
-        serializer = self.serializer_class(plant)
-        data = {"plant":serializer.data, "item2plant": items2plant, "items": items}
+        for item2plant in items2plant:
+            item = item_model.objects.get(item_id = int(item2plant['item_id']))
+            items.append({'item_name':item.item_name, 'img_link':item.img_link, 'amount':item2plant["amount"], 
+                          'item_cost':item.item_cost,'sum_cost':item.item_cost*item2plant["amount"]})
+        data = {"plant":self.serializer_class(plant).data, "items":items}
         return Response(data)
 
     def put(self, request, plant_id, format=None):

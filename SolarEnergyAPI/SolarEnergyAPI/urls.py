@@ -32,7 +32,7 @@ urlpatterns = [
     path('plants/<int:plant_id>/forming/', views.plant_forming, name='plant-forming'),
     path('plants/<int:plant_id>/finishing/', views.plant_finishing, name='plant-finishing'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('admin/', admin.site.urls),
+    path(r'admin/', admin.site.urls),
     path('users/', views.UsersList.as_view(), name='users-list'),
     path('users/<int:user_id>/', views.UsersList.as_view(), name='users-edit'),
     path('users/logout/', views.user_logout, name='users-edit'),
