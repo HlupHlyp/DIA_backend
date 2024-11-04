@@ -201,7 +201,6 @@ class PlantDetail(APIView):
 
     def put(self, request, plant_id, format=None):
         plant = get_object_or_404(self.model_class, plant_id=plant_id)
-
         serializer = self.partial_serializer_class(plant, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -230,25 +229,35 @@ def plant_finishing(request, plant_id, format=None):
         plant = get_object_or_404(plant_model, plant_id = plant_id)
         serializer = PlantStatusSerializer(plant, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(finishing_date = datetime.datetime.now())
             return Response(status=status.HTTP_206_PARTIAL_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['Post'])
-def add2plant(request, item_id, format=None):
-    get_object_or_404(plant_model, plant_id=request.POST.get('plant_id'))
+def add2plant(request, item_id, plant_id, format=None, user_id = 6):
+    plant = None
+    f = False
+    if not plant_model.objects.filter(plant_id = plant_id, plant_status = 'draft').values(): f = True  
+    if f:
+        if not plant_model.objects.filter(user_id = user_id, plant_status = 'draft').values():
+            plant = plant_model.objects.create(user = User.objects.get(id = user_id))
+            plant.save()
+        else:
+            plant = plant_model.objects.get(user_id = user_id, plant_status = 'draft')
+        plant_id = plant.plant_id
+
     get_object_or_404(item_model, item_id=item_id)
-    plant_id = request.POST.get('plant_id')
-    records = item2plant_model.objects.filter(item_id = item_id, plant_id = request.POST['plant_id']).values()
-    if not records:
+
+    if not item2plant_model.objects.filter(item_id = item_id, plant_id = plant_id):
         item2plant = item2plant_model(item_id = item_id, plant_id = plant_id, amount = 1)
         item2plant.save()
     else:
         item2plant = item2plant_model.objects.get(item_id = item_id, plant_id = plant_id)
         item2plant.amount = item2plant.amount+1
         item2plant.save()
-    return Response(status=status.HTTP_201_CREATED)
+    if plant_id != request.POST.get('plant_id'):
+        return Response(status=status.HTTP_201_CREATED, data = {'plant_id':plant_id})
 
 @api_view(['Post'])
 def user_login(request):

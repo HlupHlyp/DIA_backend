@@ -40,22 +40,22 @@ class plant_model(models.Model):
     creation_date = models.DateTimeField(default = datetime.datetime.now())
     forming_date = models.DateTimeField(default=None, blank=True, null=True)
     finishing_date = models.DateTimeField(default=None, blank=True, null=True)
-    creator_login = models.CharField(max_length=50)
+    creator_login = models.CharField(max_length=50, null=True, blank=False)
     moderator_login = models.CharField(max_length=50, default=None, blank=True, null=True)
     generation = models.DecimalField(decimal_places=2, max_digits=10, default=None, blank=True, null=True)
     saving = models.DecimalField(decimal_places=2, max_digits=10, default=None, blank=True, null=True)
     latitude = models.DecimalField(decimal_places=5, max_digits=8, default=None, blank=True, null=True)
     fio = models.CharField(max_length=255, default=None, blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Создатель акции", default = 1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Создатель станции", default = 6)
     class Meta:
         managed = True
         db_table = 'plants'
 
 class item2plant_model(models.Model):
     relate_id = models.AutoField(primary_key=True)
-    item_id = models.IntegerField()
-    plant_id = models.IntegerField()
-    amount = models.IntegerField()
+    item = models.ForeignKey('item_model', on_delete = models.CASCADE)
+    plant = models.ForeignKey('plant_model', on_delete = models.CASCADE)
+    amount = models.IntegerField(default = 1)
     class Meta:
         managed = True
         db_table = 'item2plant'
