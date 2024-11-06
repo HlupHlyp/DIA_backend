@@ -65,7 +65,6 @@ class ItemDetail(APIView):
         serializer = self.serializer_class(item)
         return Response(serializer.data)
 
-    # Обновляет информацию об акции (для модератора)
     def put(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
         serializer = self.serializer_class(item, data=request.data, partial=True)
@@ -73,7 +72,7 @@ class ItemDetail(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    # Удаляет информацию об акции
+
     def delete(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
         del_pic(item_id)
@@ -87,7 +86,6 @@ class ItemDetail(APIView):
         if serializer.is_valid():
             pic = request.FILES.get("pic")
             pic_result = add_pic(item, pic)
-            # Если в результате вызова add_pic результат - ошибка, возвращаем его.
             if 'error' in pic_result.data:    
                 return pic_result
             return Response(serializer.data)
