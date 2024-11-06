@@ -4,6 +4,7 @@ from datetime import date
 from SolarEnergy.models import item_model, plant_model, item2plant_model
 import psycopg2
 from django.db.models import Max
+from drf_yasg.utils import swagger_auto_schema
 
 def AddLineChanges(items):
     for item in items:
