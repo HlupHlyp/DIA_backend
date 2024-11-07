@@ -11,6 +11,12 @@ class ItemSerializer(serializers.ModelSerializer):
         # Поля, которые мы сериализуем
         fields = ["item_id", "item_status", "item_name", "img_link", "short_description", "long_description", "specification", "item_cost", 
         "item_type", "item_voltage", "item_capacity", "item_power"]
+        def get_fields(self):
+            new_fields = OrderedDict()
+            for name, field in super().get_fields().items():
+                field.required = False
+                new_fields[name] = field
+            return new_fields 
 
 class FullItemSerializer(serializers.ModelSerializer):
 
@@ -22,6 +28,8 @@ class FullItemSerializer(serializers.ModelSerializer):
         # Поля, которые мы сериализуем
         fields = ["item_id", "item_status", "item_name", "img_link", "short_description", "long_description", "specification", "item_cost", 
         "item_type", "item_voltage", "item_capacity", "item_power", "user_id"] 
+        
+        
 
 class PlantListSerializer(serializers.ModelSerializer):
     class Meta:

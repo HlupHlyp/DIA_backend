@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view
 from SolarPlants.minio import add_pic, del_pic
 import datetime
 from django.contrib.auth.models import User
+from drf_yasg.utils import swagger_auto_schema
 
 def user():
     try:
@@ -23,6 +24,7 @@ class ItemList(APIView):
     serializer_class = ItemSerializer
 
     # Возвращает список акций
+
     def get(self, request, format=None, creator_login = "andrew"):
         plant_id = 0
         amount = 0
@@ -43,6 +45,7 @@ class ItemList(APIView):
             data = {'items':serializer.data, 'plant_id':plant_id, 'amount':amount} 
         return Response(data)
 
+    @swagger_auto_schema(request_body=ItemSerializer)
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -60,6 +63,7 @@ class ItemDetail(APIView):
     serializer_class = ItemSerializer
 
     # Возвращает информацию об акции
+    @swagger_auto_schema(request_body=ItemSerializer)
     def get(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
         serializer = self.serializer_class(item)

@@ -23,6 +23,7 @@ class item_model(models.Model):
     item_voltage = models.DecimalField(decimal_places=2, max_digits=10, default=None, blank=True, null=True)
     item_capacity = models.DecimalField(decimal_places=2, max_digits=10, default=None, blank=True, null=True)
     item_power = models.DecimalField(decimal_places=2, max_digits=10, default=None, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Создатель элмента", default = 5)
 
     class Meta:
         managed = True
