@@ -37,6 +37,8 @@ schema_view = get_schema_view(
 
 router = routers.DefaultRouter()
 
+router.register(r'user', views.UserViewSet, basename='user')
+
 urlpatterns = [
     path('', include(router.urls)),
     path('items/', views.ItemList.as_view(), name='items-list'),
@@ -49,9 +51,12 @@ urlpatterns = [
     path('plants/<int:plant_id>/finishing/', views.plant_finishing, name='plant-finishing'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path(r'admin/', admin.site.urls),
-    path('users/', views.UsersList.as_view(), name='users-list'),
-    path('users/<int:user_id>/', views.UsersList.as_view(), name='users-edit'),
-    path('users/logout/', views.user_logout, name='users-edit'),
-    path('users/login/', views.user_login, name='users-edit'),
+    #path('users/', views.UsersList.as_view(), name='users-list'),
+    #path('users/<int:user_id>/', views.UsersList.as_view(), name='users-edit'),
+    #path('users/logout/', views.user_logout, name='users-edit'),
+    #path('users/login/', views.user_login, name='users-edit'),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('login',  views.login_view, name='login'),
+    path('logout', views.logout_view, name='logout'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

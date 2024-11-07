@@ -3,21 +3,26 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from SolarPlants.serializers import ItemSerializer, PlantSerializer, PlantListSerializer, PlantChangeSerializer, Item2PlantSerializer, PlantStatusSerializer, UserSerializer
-from SolarPlants.models import item_model, plant_model, item2plant_model
+from SolarPlants.models import item_model, plant_model, item2plant_model, CustomUser
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from SolarPlants.minio import add_pic, del_pic
 import datetime
 from django.contrib.auth.models import User
 from drf_yasg.utils import swagger_auto_schema
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
 
-def user():
-    try:
-        user1 = User.objects.get(id=1)
-    except:
-        user1 = User(id=1, first_name="Иван", last_name="Иванов", password=1234, username="user1")
-        user1.save()
-    return user1
+#def user():
+    ##try:
+    #    user1 = User.objects.get(id=1)
+    #except:
+    #    user1 = User(id=1, first_name="Иван", last_name="Иванов", password=1234, username="user1")
+    #    user1.save()
+    #return user1
 
 class ItemList(APIView):
     model_class = item_model
@@ -63,12 +68,13 @@ class ItemDetail(APIView):
     serializer_class = ItemSerializer
 
     # Возвращает информацию об акции
-    @swagger_auto_schema(request_body=ItemSerializer)
     def get(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
         serializer = self.serializer_class(item)
         return Response(serializer.data)
-
+    
+    @swagger_auto_schema(request_body=ItemSerializer)
+    @permission_classes([IsAuthenticated])
     def put(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
         serializer = self.serializer_class(item, data=request.data, partial=True)
@@ -95,25 +101,6 @@ class ItemDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UsersList(APIView):
-    model_class = User
-    serializer_class = UserSerializer
-
-    def post(self, request, format=None):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, user_id):
-        user = get_object_or_404(self.model_class, id = user_id)
-        serializer = self.serializer_class(user,data = request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response('Incorrect data', status=status.HTTP_400_BAD_REQUEST)
 
 class item2plant(APIView):
     model_class = item2plant_model
@@ -271,5 +258,76 @@ def user_logout(request):
 
 
 
+class UserViewSet(ModelViewSet):
+    """Класс, описывающий методы работы с пользователями
+    Осуществляет связь с таблицей пользователей в базе данных
+    """
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    model_class = CustomUser
 
+    def create(self, request):
+        """
+        Функция регистрации новых пользователей
+        Если пользователя c указанным в request email ещё нет, в БД будет добавлен новый пользователь.
+        """
+        if self.model_class.objects.filter(email=request.data['email']).exists():
+            return Response({'status': 'Exist'}, status=400)
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            print(serializer.data)
+            self.model_class.objects.create_user(email=serializer.data['email'],
+                                     password=serializer.data['password'],
+                                     is_superuser=serializer.data['is_superuser'],
+                                     is_staff=serializer.data['is_staff'])
+            return Response({'status': 'Success'}, status=200)
+        return Response({'status': 'Error', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    
+@permission_classes([AllowAny])
+@authentication_classes([])
+@csrf_exempt
+@swagger_auto_schema(method='post', request_body=UserSerializer)
+@api_view(['Post'])
+def login_view(request):
+    print('!!!')
+    email = request.POST["email"] # допустим передали username и password
+    password = request.POST["password"]
+    user = authenticate(request, email=email, password=password)
+    if user is not None:
+        login(request, user)
+        return HttpResponse("{'status': 'ok'}")
+    else:
+        return HttpResponse("{'status': 'error', 'error': 'login failed'}")
+    
+@permission_classes([AllowAny])
+@authentication_classes([])
+@csrf_exempt
+@swagger_auto_schema(method='post', request_body=UserSerializer)
+@api_view(['Post'])
+def create(self, request):
+        """
+        Функция регистрации новых пользователей
+        Если пользователя c указанным в request email ещё нет, в БД будет добавлен новый пользователь.
+        """
+        if self.model_class.objects.filter(email=request.data['email']).exists():
+            return Response({'status': 'Exist'}, status=400)
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            print(serializer.data)
+            self.model_class.objects.create_user(email=serializer.data['email'],
+                                     password=serializer.data['password'],
+                                     is_superuser=serializer.data['is_superuser'],
+                                     is_staff=serializer.data['is_staff'])
+            return Response({'status': 'Success'}, status=200)
+        return Response({'status': 'Error', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+@permission_classes([AllowAny])
+@authentication_classes([])
+@csrf_exempt
+@swagger_auto_schema(method='post', request_body=UserSerializer)
+@api_view(['Post'])
+
+def logout_view(request):
+    logout(request._request)
+    return Response({'status': 'Success'})
    

@@ -1,8 +1,7 @@
-from SolarPlants.models import item_model,plant_model,item2plant_model
+from SolarPlants.models import item_model,plant_model,item2plant_model, CustomUser
 #from SolarPlants.models import AuthUser
 from rest_framework import serializers
-from django.contrib.auth.models import User
-
+from collections import OrderedDict
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -69,8 +68,8 @@ class Item2PlantSerializer(serializers.ModelSerializer):
         fields = ["relate_id", "item_id", "plant_id", "amount"]
 
 class UserSerializer(serializers.ModelSerializer):
-
+    is_staff = serializers.BooleanField(default=False, required=False)
+    is_superuser = serializers.BooleanField(default=False, required=False)
     class Meta:
-        model = User
-        fields = ["id","password", "last_login", "is_superuser", "username", "last_name", "email", 
-        "is_staff", "is_active", "date_joined", "first_name"]
+        model = CustomUser
+        fields = ['email', 'password', 'is_staff', 'is_superuser']
