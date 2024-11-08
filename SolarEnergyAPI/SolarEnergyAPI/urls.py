@@ -55,8 +55,8 @@ urlpatterns = [
     #path('users/<int:user_id>/', views.UsersList.as_view(), name='users-edit'),
     #path('users/logout/', views.user_logout, name='users-edit'),
     #path('users/login/', views.user_login, name='users-edit'),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('login',  views.login_view, name='login'),
-    path('logout', views.logout_view, name='logout'),
+    path('users/login/',  views.login_user, name='login'),
+    path('users/logout/', views.logout_user, name='logout'),
+    path('users/create/', views.create_user, name='logout'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

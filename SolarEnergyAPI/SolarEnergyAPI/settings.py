@@ -108,7 +108,10 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
-        #'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
     ]
 }
 
@@ -141,3 +144,6 @@ AWS_S3_ENDPOINT_URL = 'localhost:9000'
 MINIO_USE_SSL = False
 
 AUTH_USER_MODEL = "SolarPlants.CustomUser"
+
+REDIS_HOST = '0.0.0.0'
+REDIS_PORT = 6379

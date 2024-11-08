@@ -13,23 +13,66 @@ from django.contrib.auth.models import User
 from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny#, IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
+from SolarPlants.permissions import IsManager, IsAdmin, IsAuthenticated
+from django.conf import settings
+import redis, uuid
 
-#def user():
-    ##try:
-    #    user1 = User.objects.get(id=1)
-    #except:
-    #    user1 = User(id=1, first_name="Иван", last_name="Иванов", password=1234, username="user1")
-    #    user1.save()
-    #return user1
+# Connect to our Redis instance
+session_storage = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+
+class UserViewSet(ModelViewSet):
+    """Класс, описывающий методы работы с пользователями
+    Осуществляет связь с таблицей пользователей в базе данных
+    """
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    model_class = CustomUser
+
+    def create(self, request):
+        """
+        Функция регистрации новых пользователей
+        Если пользователя c указанным в request email ещё нет, в БД будет добавлен новый пользователь.
+        """
+        if self.model_class.objects.filter(email=request.data['email']).exists():
+            return Response({'status': 'Exist'}, status=400)
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            print(serializer.data)
+            self.model_class.objects.create_user(email=serializer.data['email'],
+                                     password=serializer.data['password'],
+                                     is_superuser=serializer.data['is_superuser'],
+                                     is_staff=serializer.data['is_staff'])
+            return Response({'status': 'Success'}, status=200)
+        return Response({'status': 'Error', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get_permissions(self):
+        print('!!!')
+        if self.action in ['create']:
+            permission_classes = [AllowAny]
+        elif self.action in ['list']:
+            permission_classes = [IsAdmin | IsManager]
+        else:
+            permission_classes = [IsAdmin]
+        return [permission() for permission in permission_classes]
+
+def method_permission_classes(classes):
+    def decorator(func):
+        def decorated_func(self, *args, **kwargs):
+            self.permission_classes = classes        
+            self.check_permissions(self.request)
+            return func(self, *args, **kwargs)
+        return decorated_func
+    return decorator
 
 class ItemList(APIView):
     model_class = item_model
     serializer_class = ItemSerializer
-
+    #permission_classes = [IsAuthenticated]
     # Возвращает список акций
-
+    #permission_classes = {"get": [IsManager], "post": [IsAuthenticated]}
+    @method_permission_classes((IsAuthenticated,))
     def get(self, request, format=None, creator_login = "andrew"):
         plant_id = 0
         amount = 0
@@ -255,79 +298,49 @@ def user_login(request):
 @api_view(['Post'])
 def user_logout(request):
     return Response('logout',status=status.HTTP_200_OK)
-
-
-
-class UserViewSet(ModelViewSet):
-    """Класс, описывающий методы работы с пользователями
-    Осуществляет связь с таблицей пользователей в базе данных
-    """
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
-    model_class = CustomUser
-
-    def create(self, request):
-        """
-        Функция регистрации новых пользователей
-        Если пользователя c указанным в request email ещё нет, в БД будет добавлен новый пользователь.
-        """
-        if self.model_class.objects.filter(email=request.data['email']).exists():
-            return Response({'status': 'Exist'}, status=400)
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            print(serializer.data)
-            self.model_class.objects.create_user(email=serializer.data['email'],
-                                     password=serializer.data['password'],
-                                     is_superuser=serializer.data['is_superuser'],
-                                     is_staff=serializer.data['is_staff'])
-            return Response({'status': 'Success'}, status=200)
-        return Response({'status': 'Error', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
+@api_view(['Post'])    
 @permission_classes([AllowAny])
 @authentication_classes([])
 @csrf_exempt
-@swagger_auto_schema(method='post', request_body=UserSerializer)
-@api_view(['Post'])
-def login_view(request):
-    print('!!!')
-    email = request.POST["email"] # допустим передали username и password
+def login_user(request):
+    username = request.POST["email"] 
     password = request.POST["password"]
-    user = authenticate(request, email=email, password=password)
+    user = authenticate(request, email=username, password=password)
     if user is not None:
-        login(request, user)
-        return HttpResponse("{'status': 'ok'}")
+        random_key = str(uuid.uuid4())
+        session_storage.set(random_key, username)
+
+        response = HttpResponse("{'status': 'ok'}")
+        response.set_cookie("session_id", random_key)
+
+        return response
     else:
         return HttpResponse("{'status': 'error', 'error': 'login failed'}")
     
+@swagger_auto_schema(method='post', request_body=UserSerializer)
+@api_view(['Post'])
 @permission_classes([AllowAny])
 @authentication_classes([])
 @csrf_exempt
-@swagger_auto_schema(method='post', request_body=UserSerializer)
-@api_view(['Post'])
-def create(self, request):
-        """
-        Функция регистрации новых пользователей
-        Если пользователя c указанным в request email ещё нет, в БД будет добавлен новый пользователь.
-        """
-        if self.model_class.objects.filter(email=request.data['email']).exists():
+def create_user(request):
+        if CustomUser.objects.filter(email=request.data['email']).exists():
             return Response({'status': 'Exist'}, status=400)
-        serializer = self.serializer_class(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             print(serializer.data)
-            self.model_class.objects.create_user(email=serializer.data['email'],
+            CustomUser.objects.create_user(email=serializer.data['email'],
                                      password=serializer.data['password'],
                                      is_superuser=serializer.data['is_superuser'],
                                      is_staff=serializer.data['is_staff'])
             return Response({'status': 'Success'}, status=200)
         return Response({'status': 'Error', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-@permission_classes([AllowAny])
-@authentication_classes([])
-@csrf_exempt
-@swagger_auto_schema(method='post', request_body=UserSerializer)
+#@swagger_auto_schema(method='post', request_body=UserSerializer)
 @api_view(['Post'])
-
-def logout_view(request):
+@permission_classes([IsAuthenticated])
+@authentication_classes([])
+def logout_user(request):
     logout(request._request)
     return Response({'status': 'Success'})
    
