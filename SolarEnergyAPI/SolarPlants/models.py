@@ -69,14 +69,12 @@ class plant_model(models.Model):
     creation_date = models.DateTimeField(default = datetime.datetime.now())
     forming_date = models.DateTimeField(default=None, blank=True, null=True)
     finishing_date = models.DateTimeField(default=None, blank=True, null=True)
-    creator_login = models.CharField(max_length=50, null=True, blank=False)
-    moderator_login = models.CharField(max_length=50, default=None, blank=True, null=True)
     generation = models.DecimalField(decimal_places=2, max_digits=10, default=None, blank=True, null=True)
     saving = models.DecimalField(decimal_places=2, max_digits=10, default=None, blank=True, null=True)
     latitude = models.DecimalField(decimal_places=5, max_digits=8, default=None, blank=True, null=True)
     fio = models.CharField(max_length=255, default=None, blank=True, null=True)
     creator = models.ForeignKey(CustomUser, models.DO_NOTHING, db_column='creator', default = '1')
-    moderator = models.ForeignKey(CustomUser, models.DO_NOTHING, db_column='moderator', related_name='queue_moderator_set', blank=True, null=True)
+    moderator = models.ForeignKey(CustomUser, models.DO_NOTHING, db_column='moderator', related_name='plant_moderator', blank=True, null=True)
     class Meta:
         managed = True
         db_table = 'plants'

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from SolarPlants.serializers import ItemSerializer, PlantSerializer, PlantListSerializer, PlantChangeSerializer, Item2PlantSerializer, PlantStatusSerializer, UserSerializer
+from SolarPlants.serializers import ItemSerializer, PlantSerializer, PlantChangeSerializer, Item2PlantSerializer, PlantStatusSerializer, UserSerializer
 from SolarPlants.models import item_model, plant_model, item2plant_model, CustomUser
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -13,14 +13,19 @@ from django.contrib.auth.models import User
 from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from django.views.decorators.csrf import csrf_exempt
-from SolarPlants.permissions import IsManager, IsAdmin, IsAu
+from SolarPlants.permissions import IsManager, IsAuthorised
 from django.conf import settings
 import redis, uuid
 
 # Connect to our Redis instance
 session_storage = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+
+def get_user(request):
+    session_id = request.COOKIES['session_id']
+    email = session_storage.get(session_id).decode('utf-8')
+    return CustomUser.objects.filter(email=email).first()
 
 class UserViewSet(ModelViewSet):
     """Класс, описывающий методы работы с пользователями
@@ -69,11 +74,6 @@ def method_permission_classes(classes):
 class ItemList(APIView):
     model_class = item_model
     serializer_class = ItemSerializer
-    #permission_classes = [IsAuthenticated]
-    # Возвращает список акций
-    #permission_classes = {"get": [IsManager], "post": [IsAuthenticated]}
-    @method_permission_classes((AllowAny,))
-    @api_view(['Post'])
     def get(self, request, format=None, creator_login = "andrew"):
         plant_id = 0
         amount = 0
@@ -83,6 +83,7 @@ class ItemList(APIView):
         or item_model.objects.filter(short_description__icontains=search_request, item_status = 'active'))
         serializer = self.serializer_class(items, many=True)
         plants = plant_model.objects.filter(creator_login = creator_login, plant_status = "draft").values()
+        print('!')
         if not plants:
             data = {'items':serializer.data, 'plant_id':None, 'amount':None}
         else:
@@ -94,7 +95,7 @@ class ItemList(APIView):
             data = {'items':serializer.data, 'plant_id':plant_id, 'amount':amount} 
         return Response(data)
     
-    @method_permission_classes((IsAu,))
+    @method_permission_classes((IsManager,))
     @swagger_auto_schema(request_body=ItemSerializer)
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
@@ -117,7 +118,7 @@ class ItemDetail(APIView):
         return Response(serializer.data)
     
     @swagger_auto_schema(request_body=ItemSerializer)
-    @permission_classes([IsAuthenticated])
+    @method_permission_classes((IsManager,))
     def put(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
         serializer = self.serializer_class(item, data=request.data, partial=True)
@@ -125,7 +126,8 @@ class ItemDetail(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
+    @method_permission_classes((IsManager,))
     def delete(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
         del_pic(item_id)
@@ -133,6 +135,7 @@ class ItemDetail(APIView):
         item.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @method_permission_classes((IsManager,))
     def post(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
         serializer = self.serializer_class(item, data=request.data, partial=True)
@@ -149,6 +152,7 @@ class item2plant(APIView):
     model_class = item2plant_model
     serializer_class = Item2PlantSerializer
 
+    @method_permission_classes((IsAuthorised,))
     def delete(self, request, format=None):
         item_id = request.POST['item_id']
         plant_id = request.POST['plant_id']
@@ -157,7 +161,8 @@ class item2plant(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-    
+        
+    @method_permission_classes((IsAuthorised,))
     def put(self, request, format=None):
         item_id = request.POST['item_id']
         plant_id = request.POST['plant_id']
@@ -172,8 +177,9 @@ class item2plant(APIView):
 
 class PlantList(APIView):
     model_class = plant_model
-    serializer_class = PlantListSerializer
+    serializer_class = PlantSerializer
 
+    @method_permission_classes((IsAuthorised,))
     def get(self, request, format=None):
         plants = []
         req_plant_status = request.POST.get("plant_status")
@@ -196,17 +202,12 @@ class PlantList(APIView):
             bottom_date = "2000-01-01"
         if status_f:
             plants = (plant_model.objects.filter(plant_status = req_plant_status) 
-            & plant_model.objects.filter(forming_date__range=[bottom_date, top_date]))
-            print(req_plant_status)
-            print(plants)
+            & plant_model.objects.filter(forming_date__range=[bottom_date, top_date]) & plant_model.objects.filter(creator=get_user(request)))
         else:
             plants = ((plant_model.objects.filter(plant_status = "completed") | plant_model.objects.filter(plant_status = "formed") 
-            | plant_model.objects.filter(plant_status = "rejected")) & plant_model.objects.filter(forming_date__range=[bottom_date, top_date]))
-            print(plants.values())
-            print(bottom_date)
-            print(top_date)
-            plants =  plant_model.objects.filter(forming_date__range=[bottom_date, top_date])
-            print(plants.values())
+            | plant_model.objects.filter(plant_status = "rejected")) & plant_model.objects.filter(forming_date__range=[bottom_date, top_date]) 
+            & plant_model.objects.filter(creator=get_user(request)))
+            plants = plant_model.objects.filter(forming_date__range=[bottom_date, top_date])
         if not plants:
             return Response(None)
         else:
@@ -218,10 +219,11 @@ class PlantDetail(APIView):
     serializer_class = PlantSerializer
     partial_serializer_class = PlantChangeSerializer
 
+    @method_permission_classes((IsAuthorised,))
     def get(self, request, plant_id, format=None):
         plant = plant_model.objects.get(plant_id = plant_id)
-        if not plant:
-            return Response(status=status.HTTP_400_BAD_REQUEST)  
+        if not plant or (plant.creator != get_user(request) and get_user(request).is_staff):
+            return Response(status=status.HTTP_400_BAD_REQUEST)   
         items = []
         items2plant = item2plant_model.objects.filter(plant_id = plant_id).values()
         for item2plant in items2plant:
@@ -231,6 +233,7 @@ class PlantDetail(APIView):
         data = {"plant":self.serializer_class(plant).data, "items":items}
         return Response(data)
 
+    @method_permission_classes((IsAuthorised,))
     def put(self, request, plant_id, format=None):
         plant = get_object_or_404(self.model_class, plant_id=plant_id)
         serializer = self.partial_serializer_class(plant, data=request.data, partial=True)
@@ -239,6 +242,7 @@ class PlantDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @method_permission_classes((IsAuthorised,))
     def delete(self, request, plant_id, format=None):
         plant = get_object_or_404(plant_model, plant_id = plant_id)
         plant.plant_status = "deleted"
@@ -266,17 +270,18 @@ def plant_finishing(request, plant_id, format=None):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
+@permission_classes([IsAuthorised])
 @api_view(['Post'])
-def add2plant(request, item_id, plant_id, format=None, user_id = 6):
+def add2plant(request, item_id, format=None):
     plant = None
     f = False
-    if not plant_model.objects.filter(plant_id = plant_id, plant_status = 'draft').values(): f = True  
+    if not plant_model.objects.filter(creator = get_user(request), plant_status = 'draft').values(): f = True  
     if f:
-        if not plant_model.objects.filter(user_id = user_id, plant_status = 'draft').values():
-            plant = plant_model.objects.create(user = User.objects.get(id = user_id))
+        if not plant_model.objects.filter(creator = get_user(request), plant_status = 'draft').values():
+            plant = plant_model.objects.create(creator = get_user(request))
             plant.save()
         else:
-            plant = plant_model.objects.get(user_id = user_id, plant_status = 'draft')
+            plant = plant_model.objects.get(creator = get_user(request), plant_status = 'draft')
         plant_id = plant.plant_id
 
     get_object_or_404(item_model, item_id=item_id)
@@ -301,7 +306,6 @@ def user_logout(request):
     
 @api_view(['Post'])    
 @permission_classes([AllowAny])
-@authentication_classes([])
 @csrf_exempt
 def login_user(request):
     username = request.POST["email"] 
@@ -339,7 +343,7 @@ def create_user(request):
 
 #@swagger_auto_schema(method='post', request_body=UserSerializer)
 @api_view(['Post'])
-@permission_classes([IsAu])
+@permission_classes([IsAuthorised])
 @authentication_classes([])
 def logout_user(request):
     session_id = request.COOKIES["session_id"]
