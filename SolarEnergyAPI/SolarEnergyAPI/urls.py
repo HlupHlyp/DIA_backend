@@ -42,6 +42,7 @@ router.register(r'user', views.UserViewSet, basename='user')
 urlpatterns = [
     path('', include(router.urls)),
     path('items/', views.ItemList.as_view(), name='items-list'),
+    path('items/add/', views.add_item, name='create_item'),
     path('items/<int:item_id>/', views.ItemDetail.as_view(), name='items-detail'),
     path('items/add2plant/<int:item_id>/<int:plant_id>/', views.add2plant, name='add2plant'),
     path('item2plant/', views.item2plant.as_view(), name='item2plant'),

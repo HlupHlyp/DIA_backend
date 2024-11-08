@@ -13,7 +13,7 @@ class IsAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_superuser)
 
-class IsAuthenticated(permissions.BasePermission):
+class IsAu(permissions.BasePermission):
     def has_permission(self, request, view):
         try:
             session_id = request.COOKIES['session_id']

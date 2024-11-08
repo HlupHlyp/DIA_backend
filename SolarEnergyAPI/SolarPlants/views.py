@@ -13,9 +13,9 @@ from django.contrib.auth.models import User
 from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
-from rest_framework.permissions import AllowAny#, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
-from SolarPlants.permissions import IsManager, IsAdmin, IsAuthenticated
+from SolarPlants.permissions import IsManager, IsAdmin, IsAu
 from django.conf import settings
 import redis, uuid
 
@@ -72,7 +72,8 @@ class ItemList(APIView):
     #permission_classes = [IsAuthenticated]
     # Возвращает список акций
     #permission_classes = {"get": [IsManager], "post": [IsAuthenticated]}
-    @method_permission_classes((IsAuthenticated,))
+    @method_permission_classes((AllowAny,))
+    @api_view(['Post'])
     def get(self, request, format=None, creator_login = "andrew"):
         plant_id = 0
         amount = 0
@@ -92,14 +93,13 @@ class ItemList(APIView):
                 amount+=item2plant['amount']
             data = {'items':serializer.data, 'plant_id':plant_id, 'amount':amount} 
         return Response(data)
-
+    
+    @method_permission_classes((IsAu,))
     @swagger_auto_schema(request_body=ItemSerializer)
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             item = serializer.save()
-            user1 = user()
-            item.user = user1
             item.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -312,6 +312,7 @@ def login_user(request):
         session_storage.set(random_key, username)
 
         response = HttpResponse("{'status': 'ok'}")
+        print(random_key)
         response.set_cookie("session_id", random_key)
 
         return response
@@ -338,9 +339,27 @@ def create_user(request):
 
 #@swagger_auto_schema(method='post', request_body=UserSerializer)
 @api_view(['Post'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAu])
 @authentication_classes([])
 def logout_user(request):
-    logout(request._request)
-    return Response({'status': 'Success'})
-   
+    session_id = request.COOKIES["session_id"]
+    print(session_id)
+    if session_storage.exists(session_id):
+        session_storage.delete(session_id)
+        response = Response(status=status.HTTP_204_NO_CONTENT)
+        response.delete_cookie("session_id")
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    return Response(status=status.HTTP_403_FORBIDDEN)
+
+@api_view(['Post'])
+@method_permission_classes([AllowAny])
+#@swagger_auto_schema(request_body=ItemSerializer)
+def add_item(request):
+    serializer = ItemSerializer(data=request.data)
+    if serializer.is_valid():
+        item = serializer.save()
+        item.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
