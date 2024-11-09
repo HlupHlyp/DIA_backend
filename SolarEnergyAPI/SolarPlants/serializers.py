@@ -50,11 +50,13 @@ class PlantStatusSerializer(serializers.ModelSerializer):
         fields = ["plant_status"] 
 
 class Item2PlantSerializer(serializers.ModelSerializer):
+    item_id = serializers.IntegerField(required = True)
+    plant_id = serializers.IntegerField(required = True)
     class Meta:
         # Модель, которую мы сериализуем
         model = item2plant_model
         # Поля, которые мы сериализуем
-        fields = ["relate_id", "item_id", "plant_id", "amount"]
+        fields = ["item_id", "plant_id", "amount"]
 
 class UserSerializer(serializers.ModelSerializer):
     is_staff = serializers.BooleanField(default=False, required=False)

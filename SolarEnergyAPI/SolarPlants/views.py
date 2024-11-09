@@ -18,6 +18,7 @@ from django.views.decorators.csrf import csrf_exempt
 from SolarPlants.permissions import IsManager, IsAuthorised
 from django.conf import settings
 import redis, uuid
+from drf_yasg import openapi
 
 # Connect to our Redis instance
 session_storage = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
@@ -51,6 +52,7 @@ class UserViewSet(ModelViewSet):
                                      is_staff=serializer.data['is_staff'])
             return Response({'status': 'Success'}, status=200)
         return Response({'status': 'Error', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    
 
 def method_permission_classes(classes):
     def decorator(func):
@@ -64,6 +66,7 @@ def method_permission_classes(classes):
 class ItemList(APIView):
     model_class = item_model
     serializer_class = ItemSerializer
+
     def get(self, request, format=None, creator_login = "andrew"):
         plant_id = 0
         amount = 0
@@ -102,21 +105,24 @@ class ItemDetail(APIView):
     serializer_class = ItemSerializer
 
     # Возвращает информацию об акции
+    @api_view(['get'])
     def get(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
         serializer = self.serializer_class(item)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
-    @swagger_auto_schema(request_body=ItemSerializer)
+    @swagger_auto_schema(request_body=ItemSerializer,responses = {status.HTTP_404_NOT_FOUND: "item isn't found", status.HTTP_200_OK:"success",
+                                                                status.HTTP_400_BAD_REQUEST: "wrong params"}) 
     @method_permission_classes((IsManager,))
     def put(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
         serializer = self.serializer_class(item, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    @swagger_auto_schema(request_body=ItemSerializer,responses = {status.HTTP_404_NOT_FOUND: "item isn't found", status.HTTP_204_NO_CONTENT:"success"}) 
     @method_permission_classes((IsManager,))
     def delete(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
@@ -124,7 +130,9 @@ class ItemDetail(APIView):
         item.item_status = "deleted"
         item.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
+    
+    @swagger_auto_schema(request_body=ItemSerializer,responses = {status.HTTP_404_NOT_FOUND: "item is not found", status.HTTP_200_OK:"success", 
+                                                                  status.HTTP_400_BAD_REQUEST:"wrong params"}) 
     @method_permission_classes((IsManager,))
     def post(self, request, item_id, format=None):
         item = get_object_or_404(self.model_class, item_id=item_id)
@@ -134,7 +142,7 @@ class ItemDetail(APIView):
             pic_result = add_pic(item, pic)
             if 'error' in pic_result.data:    
                 return pic_result
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -142,37 +150,43 @@ class item2plant(APIView):
     model_class = item2plant_model
     serializer_class = Item2PlantSerializer
 
+    @swagger_auto_schema(responses = {status.HTTP_400_BAD_REQUEST: "wrong params", status.HTTP_404_NOT_FOUND: "no such plant", 
+                                                                        status.HTTP_403_FORBIDDEN:"you aren't creator", status.HTTP_204_NO_CONTENT:"success", 
+                                                                        status.HTTP_406_NOT_ACCEPTABLE:"plant isn't draft"})   
     @method_permission_classes((IsAuthorised,)) #✔
     def delete(self, request, format=None):
         item_id = request.POST['item_id']
         plant_id = request.POST['plant_id']
         plant = get_object_or_404(plant_model,plant_id=plant_id)
         if plant.creator != get_user(request):
-            return Response("This plant doesn't belong to you", status=status.HTTP_400_BAD_REQUEST)
+            return Response("This plant doesn't belong to you", status=status.HTTP_403_FORBIDDEN)
         if plant.plant_status != 'draft':
-            return Response("Status of this plant isn't draft", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Status of this plant isn't draft", status=status.HTTP_406_NOT_ACCEPTABLE)
         if self.model_class.objects.filter(item_id = item_id, plant_id = plant_id):
             self.model_class.objects.filter(item_id = item_id, plant_id = plant_id).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
+    @swagger_auto_schema(request_body=Item2PlantSerializer,responses = {status.HTTP_400_BAD_REQUEST: "wrong parameters", status.HTTP_404_NOT_FOUND: "no such plant", 
+                                                                        status.HTTP_403_FORBIDDEN:"you aren't creator", status.HTTP_200_OK:"successful", 
+                                                                        status.HTTP_406_NOT_ACCEPTABLE:"this plant isn't draft"})   
     @method_permission_classes((IsAuthorised,)) #✔
     def put(self, request, format=None):
         item_id = request.POST['item_id']
         plant_id = request.POST['plant_id']
         amount = request.POST['amount']
-        plant = get_object_or_404(plant_model,plant_id=plant_id)
+        plant = get_object_or_404(plant_model, plant_id=plant_id)
         if plant.creator != get_user(request):
-            return Response("This plant doesn't belong to you", status=status.HTTP_400_BAD_REQUEST)
+            return Response("This plant doesn't belong to you", status=status.HTTP_403_FORBIDDEN)
         if plant.plant_status != 'draft':
-            return Response("Status of this plant isn't draft", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Status of this plant isn't draft", status=status.HTTP_406_NOT_ACCEPTABLE)
         item2plant = get_object_or_404(self.model_class, item_id=item_id, plant_id=plant_id)
         item2plant.amount = amount
         serializer = self.serializer_class(item2plant, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PlantList(APIView):
@@ -280,6 +294,7 @@ def plant_finishing(request, plant_id, format=None):
 @permission_classes([IsAuthorised])
 @api_view(['Post'])
 def add2plant(request, item_id, format=None):
+    plant_id = None
     plant = None
     f = False
     if not plant_model.objects.filter(creator = get_user(request), plant_status = 'draft').values(): f = True  
@@ -290,6 +305,8 @@ def add2plant(request, item_id, format=None):
         else:
             plant = plant_model.objects.get(creator = get_user(request), plant_status = 'draft')
         plant_id = plant.plant_id
+    else:
+        plant_id = plant_model.objects.get(creator = get_user(request), plant_status = 'draft').plant_id
 
     get_object_or_404(item_model, item_id=item_id)
 
