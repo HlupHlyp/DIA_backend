@@ -51,16 +51,6 @@ class UserViewSet(ModelViewSet):
                                      is_staff=serializer.data['is_staff'])
             return Response({'status': 'Success'}, status=200)
         return Response({'status': 'Error', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-    
-    def get_permissions(self):
-        print('!!!')
-        if self.action in ['create']:
-            permission_classes = [AllowAny]
-        elif self.action in ['list']:
-            permission_classes = [IsAdmin | IsManager]
-        else:
-            permission_classes = [IsAdmin]
-        return [permission() for permission in permission_classes]
 
 def method_permission_classes(classes):
     def decorator(func):
@@ -152,21 +142,31 @@ class item2plant(APIView):
     model_class = item2plant_model
     serializer_class = Item2PlantSerializer
 
-    @method_permission_classes((IsAuthorised,))
+    @method_permission_classes((IsAuthorised,)) #✔
     def delete(self, request, format=None):
         item_id = request.POST['item_id']
         plant_id = request.POST['plant_id']
+        plant = get_object_or_404(plant_model,plant_id=plant_id)
+        if plant.creator != get_user(request):
+            return Response("This plant doesn't belong to you", status=status.HTTP_400_BAD_REQUEST)
+        if plant.plant_status != 'draft':
+            return Response("Status of this plant isn't draft", status=status.HTTP_400_BAD_REQUEST)
         if self.model_class.objects.filter(item_id = item_id, plant_id = plant_id):
             self.model_class.objects.filter(item_id = item_id, plant_id = plant_id).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
-    @method_permission_classes((IsAuthorised,))
+    @method_permission_classes((IsAuthorised,)) #✔
     def put(self, request, format=None):
         item_id = request.POST['item_id']
         plant_id = request.POST['plant_id']
         amount = request.POST['amount']
+        plant = get_object_or_404(plant_model,plant_id=plant_id)
+        if plant.creator != get_user(request):
+            return Response("This plant doesn't belong to you", status=status.HTTP_400_BAD_REQUEST)
+        if plant.plant_status != 'draft':
+            return Response("Status of this plant isn't draft", status=status.HTTP_400_BAD_REQUEST)
         item2plant = get_object_or_404(self.model_class, item_id=item_id, plant_id=plant_id)
         item2plant.amount = amount
         serializer = self.serializer_class(item2plant, data=request.data, partial=True)
@@ -179,7 +179,7 @@ class PlantList(APIView):
     model_class = plant_model
     serializer_class = PlantSerializer
 
-    @method_permission_classes((IsAuthorised,))
+    @method_permission_classes((IsAuthorised,)) #✔
     def get(self, request, format=None):
         plants = []
         req_plant_status = request.POST.get("plant_status")
@@ -219,11 +219,11 @@ class PlantDetail(APIView):
     serializer_class = PlantSerializer
     partial_serializer_class = PlantChangeSerializer
 
-    @method_permission_classes((IsAuthorised,))
+    @method_permission_classes((IsAuthorised,)) #✔
     def get(self, request, plant_id, format=None):
-        plant = plant_model.objects.get(plant_id = plant_id)
-        if not plant or (plant.creator != get_user(request) and get_user(request).is_staff):
-            return Response(status=status.HTTP_400_BAD_REQUEST)   
+        plant = plant_model.objects.get(plant_id = plant_id) 
+        if plant.creator != get_user(request) or not get_user(request).is_staff: 
+            return Response("This plant doesn't available for you", status=status.HTTP_400_BAD_REQUEST)
         items = []
         items2plant = item2plant_model.objects.filter(plant_id = plant_id).values()
         for item2plant in items2plant:
@@ -233,31 +233,38 @@ class PlantDetail(APIView):
         data = {"plant":self.serializer_class(plant).data, "items":items}
         return Response(data)
 
-    @method_permission_classes((IsAuthorised,))
+    @method_permission_classes((IsAuthorised,)) #✔
     def put(self, request, plant_id, format=None):
         plant = get_object_or_404(self.model_class, plant_id=plant_id)
+        if plant.creator != get_user(request) or not get_user(request).is_staff: 
+            return Response("This plant doesn't available for you", status=status.HTTP_400_BAD_REQUEST)
         serializer = self.partial_serializer_class(plant, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @method_permission_classes((IsAuthorised,))
+    @method_permission_classes((IsAuthorised,)) #✔
     def delete(self, request, plant_id, format=None):
         plant = get_object_or_404(plant_model, plant_id = plant_id)
+        if plant.creator != get_user(request): 
+            return Response("This plant doesn't available for you", status=status.HTTP_400_BAD_REQUEST)
         plant.plant_status = "deleted"
         plant.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
+permission_classes([IsAuthorised]) #✔
 @api_view(['Put'])
 def plant_forming(request, plant_id, format=None):
     plant = get_object_or_404(plant_model, plant_id = plant_id)
+    if plant.creator != get_user(request): 
+        return Response("This plant doesn't available for you", status=status.HTTP_400_BAD_REQUEST)
     plant.plant_status = "formed"
     plant.forming_date = datetime.datetime.now()
     plant.save()
     return Response(status=status.HTTP_206_PARTIAL_CONTENT)
 
+permission_classes([IsManager]) #✔
 @api_view(['Put'])
 def plant_finishing(request, plant_id, format=None):
     plant_status = request.POST.get("plant_status")
