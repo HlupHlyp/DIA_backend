@@ -3,12 +3,12 @@ from SolarPlants.models import item_model,plant_model,item2plant_model, CustomUs
 from rest_framework import serializers
 from collections import OrderedDict
 
-class ItemSerializer(serializers.ModelSerializer):
+class ItemPartialSerializer(serializers.ModelSerializer):
     class Meta:
         # Модель, которую мы сериализуем
         model = item_model
         # Поля, которые мы сериализуем
-        fields = ["item_id", "item_status", "item_name", "img_link", "short_description", "long_description", "specification", "item_cost", 
+        fields = ["item_name","short_description", "long_description", "specification", "item_cost", 
         "item_type", "item_voltage", "item_capacity", "item_power"]
         def get_fields(self):
             new_fields = OrderedDict()
@@ -17,7 +17,7 @@ class ItemSerializer(serializers.ModelSerializer):
                 new_fields[name] = field
             return new_fields 
 
-class FullItemSerializer(serializers.ModelSerializer):
+class ItemSerializer(serializers.ModelSerializer):
 
     user = serializers.StringRelatedField(read_only=True)
 
@@ -26,7 +26,7 @@ class FullItemSerializer(serializers.ModelSerializer):
         model = item_model
         # Поля, которые мы сериализуем
         fields = ["item_id", "item_status", "item_name", "img_link", "short_description", "long_description", "specification", "item_cost", 
-        "item_type", "item_voltage", "item_capacity", "item_power", "user_id"] 
+        "item_type", "item_voltage", "item_capacity", "item_power", "user"] 
 
 class PlantSerializer(serializers.ModelSerializer):
     class Meta:
@@ -52,6 +52,7 @@ class PlantStatusSerializer(serializers.ModelSerializer):
 class Item2PlantSerializer(serializers.ModelSerializer):
     item_id = serializers.IntegerField(required = True)
     plant_id = serializers.IntegerField(required = True)
+    amount = serializers.IntegerField(required = True)
     class Meta:
         # Модель, которую мы сериализуем
         model = item2plant_model
