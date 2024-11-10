@@ -13,29 +13,55 @@ class ItemPartialSerializer(serializers.ModelSerializer):
         def get_fields(self):
             new_fields = OrderedDict()
             for name, field in super().get_fields().items():
-                field.required = False
+                field.required = True
                 new_fields[name] = field
             return new_fields 
+        
+class FreeItemPartialSerializer(serializers.ModelSerializer):
+    item_name = serializers.CharField(required = False)
+    short_description = serializers.CharField(required = False)
+    long_description = serializers.CharField(required = False)
+    specification = serializers.CharField(required = False)
+    item_cost = serializers.IntegerField(required = False)
+    item_type = serializers.CharField(required = False)
+    item_voltage = serializers.DecimalField(decimal_places=2, max_digits=10,required = False)
+    item_capacity = serializers.DecimalField(decimal_places=2, max_digits=10,required = False)
+    item_power = serializers.DecimalField(decimal_places=2, max_digits=10,required = False)
+    class Meta:
+        # Модель, которую мы сериализуем
+        model = item_model
+        # Поля, которые мы сериализуем
+        fields = ["item_name","short_description", "long_description", "specification", "item_cost", 
+        "item_type", "item_voltage", "item_capacity", "item_power"]
+        def get_fields(self):
+            new_fields = OrderedDict()
+            for name, field in super().get_fields().items():
+                print('!')
+                field.required = True
+                new_fields[name] = field
+            return new_fields         
 
 class ItemSerializer(serializers.ModelSerializer):
-
-    user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         # Модель, которую мы сериализуем
         model = item_model
         # Поля, которые мы сериализуем
         fields = ["item_id", "item_status", "item_name", "img_link", "short_description", "long_description", "specification", "item_cost", 
-        "item_type", "item_voltage", "item_capacity", "item_power", "user"] 
+        "item_type", "item_voltage", "item_capacity", "item_power"] 
 
 class PlantSerializer(serializers.ModelSerializer):
     class Meta:
         # Модель, которую мы сериализуем
         model = plant_model
         # Поля, которые мы сериализуем  
-        fields = ["plant_id", "plant_status", "creation_date", "forming_date", "finishing_date", "generation", "saving", "latitude", "fio", "creator", "moderator"]    
+        fields = ["plant_id", "plant_status", "creation_date", "forming_date", "finishing_date", "generation", "saving", "latitude", "fio", "creator", "moderator"]        
 
-class PlantChangeSerializer(serializers.ModelSerializer):
+class PlantPartialSerializer(serializers.ModelSerializer):
+    generation = serializers.DecimalField(decimal_places=2, max_digits=10, required=False)
+    saving = serializers.DecimalField(decimal_places=2, max_digits=10, required=False)
+    latitude = serializers.DecimalField(decimal_places=5, max_digits=8, required=False)
+    fio = serializers.CharField(max_length=255, required=False)
     class Meta:
         # Модель, которую мы сериализуем
         model = plant_model
