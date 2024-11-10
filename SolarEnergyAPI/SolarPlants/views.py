@@ -279,6 +279,7 @@ class PlantDetail(APIView):
     model_class = plant_model
     serializer_class = PlantSerializer
     partial_serializer_class = PlantPartialSerializer
+    parser_classes=[MultiPartParser]
 
 
     @swagger_auto_schema(method = 'get', responses = {status.HTTP_404_NOT_FOUND: "no such plant", status.HTTP_403_FORBIDDEN:"it's not your plant", 
@@ -440,8 +441,9 @@ def create_user(request):
 @permission_classes([IsAuthorised])
 @api_view(['Post'])
 def logout_user(request):
-    session_id = request.COOKIES["session_id"]
-    print(session_id)
+    session_id = request.COOKIES.get("session_id")
+    if not session_id:
+        return Response(status=status.HTTP_403_FORBIDDEN)
     if session_storage.exists(session_id):
         session_storage.delete(session_id)
         response = Response(status=status.HTTP_204_NO_CONTENT)
