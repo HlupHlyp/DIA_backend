@@ -223,8 +223,8 @@ def plant_forming(request, plant_id, format=None):
 @api_view(['Put'])
 def plant_finishing(request, plant_id, format=None):
     plant_status = request.POST.get("plant_status")
-    if plant_status in ["rejected", "completed"]:
-        plant = get_object_or_404(plant_model, plant_id = plant_id)
+    plant = get_object_or_404(plant_model, plant_id = plant_id)
+    if plant_status in ["rejected", "completed"] and plant.plant_status == 'formed':
         serializer = PlantStatusSerializer(plant, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save(finishing_date = datetime.datetime.now())
@@ -264,6 +264,10 @@ def user_login(request):
 @api_view(['Post'])
 def user_logout(request):
     return Response('logout',status=status.HTTP_200_OK)
+
+@api_view(['Post'])
+def user_create(request):
+    return Response('user_created',status=status.HTTP_200_OK)
 
 
 

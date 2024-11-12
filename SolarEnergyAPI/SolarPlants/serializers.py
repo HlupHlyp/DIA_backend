@@ -54,6 +54,9 @@ class PlantStatusSerializer(serializers.ModelSerializer):
         fields = ["plant_status"] 
 
 class Item2PlantSerializer(serializers.ModelSerializer):
+    item_id = serializers.IntegerField(required = True)
+    plant_id = serializers.IntegerField(required = True)
+    amount = serializers.IntegerField(required = True)
     class Meta:
         # Модель, которую мы сериализуем
         model = item2plant_model
