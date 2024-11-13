@@ -330,7 +330,7 @@ class PlantDetail(APIView):
 
 
 @swagger_auto_schema(method='put', responses = {status.HTTP_404_NOT_FOUND: "no such plant", status.HTTP_206_PARTIAL_CONTENT:"success", 
-                                    status.HTTP_403_FORBIDDEN:"it's not your plant"}, 
+                                    status.HTTP_403_FORBIDDEN:"it's not your plant", status.HTTP_400_BAD_REQUEST:"plsnt is already formed"}, 
                          operation_description="Plant forming")   
 @api_view(['Put'])
 @permission_classes([IsAuthorised]) #✔
@@ -338,10 +338,12 @@ def plant_forming(request, plant_id, format=None):
     plant = get_object_or_404(plant_model, plant_id = plant_id)
     if plant.creator != get_user(request): 
         return Response("This plant doesn't available for you", status=status.HTTP_403_FORBIDDEN)
-    plant.plant_status = "formed"
-    plant.forming_date = datetime.datetime.now()
-    plant.save()
-    return Response(status=status.HTTP_206_PARTIAL_CONTENT)
+    if plant.plant_status == 'draft':
+        plant.plant_status = "formed"
+        plant.forming_date = datetime.datetime.now()
+        plant.save()
+        return Response(status=status.HTTP_206_PARTIAL_CONTENT)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @swagger_auto_schema(method='put', responses = {status.HTTP_404_NOT_FOUND: "no such plant", status.HTTP_206_PARTIAL_CONTENT:"success", 
@@ -353,8 +355,8 @@ def plant_forming(request, plant_id, format=None):
 @parser_classes([MultiPartParser])
 def plant_finishing(request, plant_id, format=None):
     plant_status = request.POST.get("plant_status")
-    #print()
-    if plant_status in ["rejected", "completed"]:
+    plant = get_object_or_404(plant_model, plant_id = plant_id)
+    if plant_status in ["rejected", "completed"] and plant.plant_status == 'formed':
         plant = get_object_or_404(plant_model, plant_id = plant_id)
         serializer = PlantStatusSerializer(plant, data=request.data, partial=True)
         if serializer.is_valid():
