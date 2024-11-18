@@ -55,18 +55,15 @@ class PlantSerializer(serializers.ModelSerializer):
         # Модель, которую мы сериализуем
         model = plant_model
         # Поля, которые мы сериализуем  
-        fields = ["plant_id", "plant_status", "creation_date", "forming_date", "finishing_date", "generation", "saving", "latitude", "fio", "creator", "moderator"]        
+        fields = ["plant_id", "plant_status", "creation_date", "forming_date", "finishing_date", "generation", "saving", "latitude", "creator", "moderator"]        
 
 class PlantPartialSerializer(serializers.ModelSerializer):
-    generation = serializers.DecimalField(decimal_places=2, max_digits=10, required=False)
-    saving = serializers.DecimalField(decimal_places=2, max_digits=10, required=False)
     latitude = serializers.DecimalField(decimal_places=5, max_digits=8, required=False)
-    fio = serializers.CharField(max_length=255, required=False)
     class Meta:
         # Модель, которую мы сериализуем
         model = plant_model
         # Поля, которые мы сериализуем
-        fields = ["generation", "saving", "latitude", "fio"] 
+        fields = ["latitude"] 
 
 class PlantStatusSerializer(serializers.ModelSerializer):
     class Meta:
@@ -90,4 +87,4 @@ class UserSerializer(serializers.ModelSerializer):
     is_superuser = serializers.BooleanField(default=False, required=False)
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'is_staff', 'is_superuser']
+        fields = ['email', 'password', 'is_staff', 'is_superuser', 'fio']

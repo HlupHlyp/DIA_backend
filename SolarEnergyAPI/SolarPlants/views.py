@@ -360,6 +360,8 @@ def plant_finishing(request, plant_id, format=None):
         plant = get_object_or_404(plant_model, plant_id = plant_id)
         serializer = PlantStatusSerializer(plant, data=request.data, partial=True)
         if serializer.is_valid():
+            if plant_status == 'completed':
+                calculating(plant_id)
             serializer.save(finishing_date = datetime.datetime.now())
             return Response(status=status.HTTP_206_PARTIAL_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -453,4 +455,21 @@ def logout_user(request):
         return response
     return Response(status=status.HTTP_403_FORBIDDEN)
 
+def calculating(plant_id):
+    ratio = 5 + 7*0,7
+    saving = 0
+    generation = 0
+    sets = item2plant_model.objects.filter(plant_id = plant_id).values()
+    for set in sets:
+        item_id = set["item_id"]
+        item = item_model.objects.get(item_id = item_id)
+        if item.item_type == 'battery':
+            saving += item.item_capacity * item.item_voltage * set["amount"]
+        else:
+            generation += item.item_power * ratio
+    plant = plant_model.objects.get(plant_id = plant_id)
+    plant.saving = saving
+    plant.generation = generation
+    plant.save()
 
+        
