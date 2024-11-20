@@ -26,7 +26,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     password = models.CharField(max_length=128, verbose_name="Пароль")    
     is_staff = models.BooleanField(default=False, verbose_name="Является ли пользователь менеджером?")
     is_superuser = models.BooleanField(default=False, verbose_name="Является ли пользователь админом?")
-    fio = models.CharField(max_length=128, default=None, blank=True, null=True)    
+    fio = models.CharField(max_length=128)    
 
     USERNAME_FIELD = 'email'
 

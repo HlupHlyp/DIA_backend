@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from SolarPlants.serializers import ItemSerializer, ItemPartialSerializer, PlantSerializer, PlantPartialSerializer, Item2PlantSerializer, PlantStatusSerializer, UserSerializer, FreeItemPartialSerializer
+from SolarPlants.serializers import ItemSerializer, ItemPartialSerializer, PlantSerializer, PlantPartialSerializer, Item2PlantSerializer, PlantStatusSerializer, UserSerializer, FreeItemPartialSerializer, PlantFinishSerializer
 from SolarPlants.models import item_model, plant_model, item2plant_model, CustomUser
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -113,7 +113,7 @@ class ItemList(APIView):
             if end_serializer.is_valid():
                 item = end_serializer.save()
                 item.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(end_serializer.data, status=status.HTTP_201_CREATED)
             return Response(end_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -357,14 +357,15 @@ def plant_finishing(request, plant_id, format=None):
     plant_status = request.POST.get("plant_status")
     plant = get_object_or_404(plant_model, plant_id = plant_id)
     if plant_status in ["rejected", "completed"] and plant.plant_status == 'formed':
-        plant = get_object_or_404(plant_model, plant_id = plant_id)
-        serializer = PlantStatusSerializer(plant, data=request.data, partial=True)
-        if serializer.is_valid():
-            if plant_status == 'completed':
-                calculating(plant_id)
-            serializer.save(finishing_date = datetime.datetime.now())
-            return Response(status=status.HTTP_206_PARTIAL_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        data = calculating(plant_id)
+        plant.plant_status = plant_status
+        if plant_status == "completed":
+            plant.saving = data["saving"]
+            plant.generation = data["generation"]
+            plant.finishing_date = datetime.datetime.now()
+            plant.moderator = get_user(request)
+        plant.save()
+        return Response(status=status.HTTP_206_PARTIAL_CONTENT)
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -406,22 +407,25 @@ def add2plant(request, item_id, format=None):
 @csrf_exempt
 @parser_classes([MultiPartParser])
 def login_user(request):
-    username = request.POST.get("email")
-    password = request.POST.get("password")
-    print(username, password)
-    user = authenticate(request, email=username, password=password)
-    if user is not None:
-        random_key = str(uuid.uuid4())
-        session_storage.set(random_key, username)
+    if not request.COOKIES.get('session_id'):
+        username = request.POST.get("email")
+        password = request.POST.get("password")
+        print(username, password)
+        user = authenticate(request, email=username, password=password)
+        if user is not None:
+            random_key = str(uuid.uuid4())
+            session_storage.set(random_key, username)
 
-        response = HttpResponse("{'status': 'ok'}")
-        print(random_key)
-        response.set_cookie("session_id", random_key)
+            response = HttpResponse("{'status': 'ok'}")
+            user = CustomUser.objects.filter(email = username).first()
+            user.last_login = datetime.datetime.now()
+            user.save()
+            response.set_cookie("session_id", random_key)
 
-        return response
-    else:
-        return HttpResponse("{'status': 'error', 'error': 'login failed'}")
-
+            return response
+        else:
+            return HttpResponse("{'status': 'error', 'error': 'login failed'}")
+    return HttpResponse("{'status': 'error', 'error': 'You have already authorized'}")
 
 @swagger_auto_schema(method='post', request_body=UserSerializer)
 @api_view(['Post'])
@@ -440,6 +444,19 @@ def create_user(request):
         return Response({'status': 'Error', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@permission_classes([IsAuthorised])
+@api_view(['Put'])
+def change_user(request):
+    if not request.session_id:
+        return Response({'status': 'Error', 'error': "no login"}, status=status.HTTP_403_FORBIDDEN)
+    user = get_user(request)
+    serializer = UserSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save
+        return Response({'status': 'Success'}, status=206)
+    return Response({'status': 'Error', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
 @swagger_auto_schema(method='post', responses = {status.HTTP_204_NO_CONTENT: "success", 
                                     status.HTTP_403_FORBIDDEN:"you aren't authorised"})
 @permission_classes([IsAuthorised])
@@ -456,7 +473,7 @@ def logout_user(request):
     return Response(status=status.HTTP_403_FORBIDDEN)
 
 def calculating(plant_id):
-    ratio = 5 + 7*0,7
+    ratio = 5 + 7*0.7
     saving = 0
     generation = 0
     sets = item2plant_model.objects.filter(plant_id = plant_id).values()
@@ -464,12 +481,9 @@ def calculating(plant_id):
         item_id = set["item_id"]
         item = item_model.objects.get(item_id = item_id)
         if item.item_type == 'battery':
-            saving += item.item_capacity * item.item_voltage * set["amount"]
+            saving += float(item.item_capacity) * float(item.item_voltage) * set["amount"]
         else:
-            generation += item.item_power * ratio
-    plant = plant_model.objects.get(plant_id = plant_id)
-    plant.saving = saving
-    plant.generation = generation
-    plant.save()
+            generation += float(item.item_power) * ratio
+    return {"generation":generation, "saving":saving}
 
         
