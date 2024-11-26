@@ -6,7 +6,7 @@ from rest_framework.response import *
 def process_file_upload(file_object: InMemoryUploadedFile, client, image_name):
     try:
         client.put_object('solar-energy', image_name, file_object, file_object.size)
-        return f"http://localhost:9000/solar-energy/{image_name}"
+        return f"/minio/{image_name}"
     except Exception as e:
         return {"error": str(e)}
 
