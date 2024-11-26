@@ -51,6 +51,7 @@ urlpatterns = [
     path(r'admin/', admin.site.urls),
     path('users/login/',  views.login_user, name='login'),
     path('users/logout/', views.logout_user, name='logout'),
-    path('users/create/', views.create_user, name='logout'),
+    path('users/create/', views.create_user, name='create'),
+    path('users/change/', views.change_user, name='change'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

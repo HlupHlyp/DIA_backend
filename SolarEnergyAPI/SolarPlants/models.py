@@ -73,7 +73,7 @@ class plant_model(models.Model):
     generation = models.DecimalField(decimal_places=2, max_digits=10, default=None, blank=True, null=True)
     saving = models.DecimalField(decimal_places=2, max_digits=10, default=None, blank=True, null=True)
     latitude = models.DecimalField(decimal_places=5, max_digits=8, default=None, blank=True, null=True)
-    creator = models.ForeignKey(CustomUser, models.DO_NOTHING, db_column='creator', default = '1')
+    creator = models.ForeignKey(CustomUser, db_column='creator', default = '1', on_delete = models.CASCADE)
     moderator = models.ForeignKey(CustomUser, models.DO_NOTHING, db_column='moderator', related_name='plant_moderator', blank=True, null=True)
     class Meta:
         managed = True

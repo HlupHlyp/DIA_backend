@@ -29,8 +29,10 @@ def get_user(request):
     if not request.COOKIES.get('session_id'):
         return False
     session_id = request.COOKIES['session_id']
-    email = session_storage.get(session_id).decode('utf-8')
-    return CustomUser.objects.filter(email=email).first()
+    if session_storage.get(session_id) is not None:
+        email = session_storage.get(session_id).decode('utf-8')
+        return CustomUser.objects.filter(email=email).first()
+    return False
 
 class UserViewSet(ModelViewSet):
     """Класс, описывающий методы работы с пользователями
@@ -206,14 +208,16 @@ class item2plant(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-    @swagger_auto_schema(request_body=Item2PlantSerializer,responses = {status.HTTP_400_BAD_REQUEST: "wrong params", status.HTTP_404_NOT_FOUND: "no such plant", 
+    @swagger_auto_schema(responses = {status.HTTP_400_BAD_REQUEST: "wrong params", status.HTTP_404_NOT_FOUND: "no such plant", 
                                                                         status.HTTP_403_FORBIDDEN:"you aren't creator", status.HTTP_206_PARTIAL_CONTENT:serializer_class, 
                                                                         status.HTTP_406_NOT_ACCEPTABLE:"this plant isn't draft"}, 
-                            operation_description="Changing item amount in plant")   
+                            operation_description="Changing item amount in plant", manual_parameters=[openapi.Parameter(name="plant_id", in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER,required=True), 
+                                               openapi.Parameter(name="item_id", in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER,required=True),
+                                               openapi.Parameter(name="amount", in_=openapi.IN_FORM, type=openapi.TYPE_INTEGER,required=True)])   
     @method_permission_classes((IsAuthorised,)) #✔
     def put(self, request, format=None):
-        item_id = request.POST['item_id']
-        plant_id = request.POST['plant_id']
+        item_id = request.query_params.get('item_id')
+        plant_id = request.query_params.get('plant_id')
         amount = request.POST['amount']
         plant = get_object_or_404(plant_model, plant_id=plant_id)
         if plant.creator != get_user(request):
@@ -407,11 +411,12 @@ def add2plant(request, item_id, format=None):
 @csrf_exempt
 @parser_classes([MultiPartParser])
 def login_user(request):
-    if not request.COOKIES.get('session_id'):
+    if not get_user(request):
         username = request.POST.get("email")
         password = request.POST.get("password")
         print(username, password)
         user = authenticate(request, email=username, password=password)
+        print(user)
         if user is not None:
             random_key = str(uuid.uuid4())
             session_storage.set(random_key, username)
@@ -427,10 +432,13 @@ def login_user(request):
             return HttpResponse("{'status': 'error', 'error': 'login failed'}")
     return HttpResponse("{'status': 'error', 'error': 'You have already authorized'}")
 
-@swagger_auto_schema(method='post', request_body=UserSerializer)
-@api_view(['Post'])
+@swagger_auto_schema(method='post', request_body=UserSerializer, responses = {status.HTTP_404_NOT_FOUND: "no such plant", status.HTTP_200_OK:"success", 
+                                    status.HTTP_400_BAD_REQUEST:"exists or wrong params"}, 
+                         operation_description="User creation", )  
 @permission_classes([AllowAny])
+@api_view(['Post'])
 @csrf_exempt
+@parser_classes([MultiPartParser])
 def create_user(request):
         if CustomUser.objects.filter(email=request.data['email']).exists():
             return Response({'status': 'Exist'}, status=400)
